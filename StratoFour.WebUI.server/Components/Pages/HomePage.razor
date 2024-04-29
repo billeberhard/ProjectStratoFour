@@ -1,7 +1,28 @@
 ﻿@page "/"
 
 <h3>HomePage</h3>
-
+<button @onclick="SendRequest">Verbindungstest</button>
 @code {
+    private async Task SendRequest()
+    {
+        var factory = new MQTTnet.MqttFactory();
+        var mqttClient = factory.CreateMqttClient();
 
+        var options = new MqttClientOptionsBuilder()
+            .WithTcpServer("localhost", 1883) // Hier die IP-Adresse und Portnummer des MQTT-Brokers eintragen
+            .Build();
+
+        await mqttClient.ConnectAsync(options);
+
+        var message = new MQTTnet.MqttApplicationMessageBuilder()
+            .WithTopic("topic") // Hier das Topic eintragen, über das der Roboter Nachrichten empfängt
+            .WithPayload("Hier den Request-Payload eintragen")
+            .WithExactlyOnceQoS()
+            .WithRetainFlag()
+            .Build();
+
+        await mqttClient.PublishAsync(message);
+
+        await mqttClient.DisconnectAsync();
+    }
 }
