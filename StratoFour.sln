@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour", "StratoFour\StratoFour.csproj", "{CAA846C5-6AB4-46DB-B93F-CA7E1D9CBC45}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3F90F8D3-8AB3-4B86-9B27-435668EB1F59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StratoFour.Domain", "StratoFour.Domain\StratoFour.Domain.csproj", "{5442236D-5C8A-4DEE-A230-81DE8FC394FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StratoFour.Application", "StratoFour.Application\StratoFour.Application.csproj", "{10EB7B32-66CA-4BD2-9C7D-40C660D959CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StratoFour.Infrastructure", "StratoFour.Infrastructure\StratoFour.Infrastructure.csproj", "{97238767-F22C-4CF5-9A9C-0B2E0B188952}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StratoFour.WebUI.server", "StratoFour.WebUI.server\StratoFour.WebUI.server.csproj", "{AB43E474-8D67-4094-BC85-D56E7D546BE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,13 +19,31 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CAA846C5-6AB4-46DB-B93F-CA7E1D9CBC45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CAA846C5-6AB4-46DB-B93F-CA7E1D9CBC45}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CAA846C5-6AB4-46DB-B93F-CA7E1D9CBC45}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CAA846C5-6AB4-46DB-B93F-CA7E1D9CBC45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5442236D-5C8A-4DEE-A230-81DE8FC394FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5442236D-5C8A-4DEE-A230-81DE8FC394FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5442236D-5C8A-4DEE-A230-81DE8FC394FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5442236D-5C8A-4DEE-A230-81DE8FC394FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10EB7B32-66CA-4BD2-9C7D-40C660D959CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10EB7B32-66CA-4BD2-9C7D-40C660D959CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10EB7B32-66CA-4BD2-9C7D-40C660D959CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10EB7B32-66CA-4BD2-9C7D-40C660D959CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97238767-F22C-4CF5-9A9C-0B2E0B188952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97238767-F22C-4CF5-9A9C-0B2E0B188952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97238767-F22C-4CF5-9A9C-0B2E0B188952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97238767-F22C-4CF5-9A9C-0B2E0B188952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB43E474-8D67-4094-BC85-D56E7D546BE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB43E474-8D67-4094-BC85-D56E7D546BE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB43E474-8D67-4094-BC85-D56E7D546BE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB43E474-8D67-4094-BC85-D56E7D546BE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5442236D-5C8A-4DEE-A230-81DE8FC394FB} = {3F90F8D3-8AB3-4B86-9B27-435668EB1F59}
+		{10EB7B32-66CA-4BD2-9C7D-40C660D959CC} = {3F90F8D3-8AB3-4B86-9B27-435668EB1F59}
+		{97238767-F22C-4CF5-9A9C-0B2E0B188952} = {3F90F8D3-8AB3-4B86-9B27-435668EB1F59}
+		{AB43E474-8D67-4094-BC85-D56E7D546BE3} = {3F90F8D3-8AB3-4B86-9B27-435668EB1F59}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {543480F3-866C-41B6-8FF0-8AD5076AA262}
