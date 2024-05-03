@@ -1,28 +1,30 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
 <h3>HomePage</h3>
-<button @onclick="SendRequest">Verbindungstest</button>
+<button @onclick="@(async () => await SendRequest(1))">Verbindungstest Spieler1</button>
+<button @onclick="@(async () => await SendRequest(2))">Verbindungstestp Spieler2</button>
+
 @code {
-    private async Task SendRequest()
+    private async Task SendRequest(int player)
     {
         var factory = new MQTTnet.MqttFactory();
         var mqttClient = factory.CreateMqttClient();
 
-        var options = new MqttClientOptionsBuilder()
+        var options = new MQTTnet.Client.MqttClientOptionsBuilder()
             .WithTcpServer("localhost", 1883) // Hier die IP-Adresse und Portnummer des MQTT-Brokers eintragen
             .Build();
 
         await mqttClient.ConnectAsync(options);
-
+        string playerCommand = "4$" + player.ToString();
         var message = new MQTTnet.MqttApplicationMessageBuilder()
-            .WithTopic("topic") // Hier das Topic eintragen, über das der Roboter Nachrichten empfängt
-            .WithPayload("Hier den Request-Payload eintragen")
-            .WithExactlyOnceQoS()
+            .WithTopic("send_from_app/position") // Hier das Topic eintragen, über das der Roboter Nachrichten empfängt
+            .WithPayload(playerCommand)
             .WithRetainFlag()
             .Build();
 
         await mqttClient.PublishAsync(message);
 
-        await mqttClient.DisconnectAsync();
+        await mqttClient.DisconnectAsync(null);
     }
 }
