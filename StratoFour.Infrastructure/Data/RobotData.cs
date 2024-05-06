@@ -29,7 +29,7 @@ public class RobotData : IRobotData
     public Task InsertRobots(RobotModel robot) => _db.SaveData("dbo.spRobot_Insert", new { robot.RobotName, robot.RobotStatus });
 
 
-    public Task UpdateUser(RobotModel robot) => _db.SaveData("dbo.spRobot_Update", robot);
+    public Task UpdateRobot(RobotModel robot) => _db.SaveData("dbo.spRobot_Update", robot);
 
-    public Task DeleteUser(int id) => _db.SaveData("dbo.spRobot_Delete", new { Id = id });
+    public Task DeleteRobot(int id) => _db.SaveData("dbo.spRobot_Delete", new { Id = id });
 }

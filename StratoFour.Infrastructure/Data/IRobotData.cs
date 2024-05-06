@@ -4,10 +4,10 @@ namespace StratoFour.Infrastructure.Data
 {
     public interface IRobotData
     {
-        Task DeleteUser(int id);
+        Task DeleteRobot(int id);
         Task<IEnumerable<RobotModel>> GetRobots();
         Task<RobotModel> GetRobots(int id);
         Task InsertRobots(RobotModel robot);
-        Task UpdateUser(RobotModel robot);
+        Task UpdateRobot(RobotModel robot);
     }
 }
