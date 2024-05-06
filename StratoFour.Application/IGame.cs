@@ -1,4 +1,4 @@
-﻿using StratoFour.Application.GameBoard;
+﻿using StratoFour.Application.Board;
 using StratoFour.Application;
 
 namespace StratoFour.Application

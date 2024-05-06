@@ -1,13 +1,10 @@
-﻿using StratoFour.Application;
-using StratoFour.Application.GameBoard;
-using StratoFour.Application.GameBoardNavigationHelper;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ConnectFourLogic.GameBoard
+namespace StratoFour.Application.Board
 {
     public class GameBoard : IGameBoard
     {
@@ -115,19 +112,21 @@ namespace ConnectFourLogic.GameBoard
             for (var startColumn = currentCell.Column - 3; startColumn <= currentCell.Column; startColumn++)
             {
                 var startCell = new GameBoardCell(startColumn, currentCell.Row);
-                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GetNextCellOnRight);
+                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
 
                 if (canConnect)
                 {
                     return true;
                 }
             }
+
             return false;
         }
 
         private bool CheckVertically(Player player, GameBoardCell currentCell)
         {
-            var canConnect = CanConnectFour(player, currentCell, currentCell, GameBoardNavigationHelper.GetNextCellBelow);
+            var canConnect = CanConnectFour(player, currentCell, currentCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
+
             return canConnect;
         }
 
@@ -136,13 +135,14 @@ namespace ConnectFourLogic.GameBoard
             for (int startDistance = 3; startDistance >= 0; startDistance--)
             {
                 var startCell = new GameBoardCell(currentCell.Column - startDistance, currentCell.Row + startDistance);
-                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GetNextCellOnRightCornerAbove);
+                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
 
                 if (canConnect)
                 {
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -151,13 +151,14 @@ namespace ConnectFourLogic.GameBoard
             for (int startDistance = 3; startDistance >= 0; startDistance--)
             {
                 var startCell = new GameBoardCell(currentCell.Column - startDistance, currentCell.Row - startDistance);
-                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
+                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
 
                 if (canConnect)
                 {
                     return true;
                 }
             }
+
             return false;
         }
 

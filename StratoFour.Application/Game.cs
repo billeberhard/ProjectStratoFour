@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using StratoFour.Application.GameBoard;
+using StratoFour.Application.Board;
 using StratoFour.Application.BotStrategies;
 using StratoFour.Application;
 

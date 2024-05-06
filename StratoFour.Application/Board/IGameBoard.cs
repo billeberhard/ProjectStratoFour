@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace StratoFour.Application.GameBoard
+namespace StratoFour.Application.Board
 {
     public interface IGameBoard
     {

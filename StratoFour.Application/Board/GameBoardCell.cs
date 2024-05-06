@@ -1,4 +1,4 @@
-﻿namespace StratoFour.Application.GameBoard
+﻿namespace StratoFour.Application.Board
 {
     public class GameBoardCell
     {

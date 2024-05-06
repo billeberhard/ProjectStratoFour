@@ -1,8 +1,11 @@
-﻿using System;
+﻿using StratoFour.Application;
+using StratoFour.Application.Board;
+using StratoFour.Application.Board.GameBoardNavigationHelper;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Numerics;
 
 namespace StratoFour.Application.GameBoard
 {
@@ -112,21 +115,19 @@ namespace StratoFour.Application.GameBoard
             for (var startColumn = currentCell.Column - 3; startColumn <= currentCell.Column; startColumn++)
             {
                 var startCell = new GameBoardCell(startColumn, currentCell.Row);
-                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
+                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GetNextCellOnRight);
 
                 if (canConnect)
                 {
                     return true;
                 }
             }
-
             return false;
         }
 
         private bool CheckVertically(Player player, GameBoardCell currentCell)
         {
-            var canConnect = CanConnectFour(player, currentCell, currentCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
-
+            var canConnect = CanConnectFour(player, currentCell, currentCell, GameBoardNavigationHelper.GetNextCellBelow);
             return canConnect;
         }
 
@@ -135,14 +136,13 @@ namespace StratoFour.Application.GameBoard
             for (int startDistance = 3; startDistance >= 0; startDistance--)
             {
                 var startCell = new GameBoardCell(currentCell.Column - startDistance, currentCell.Row + startDistance);
-                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
+                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GetNextCellOnRightCornerAbove);
 
                 if (canConnect)
                 {
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -151,14 +151,13 @@ namespace StratoFour.Application.GameBoard
             for (int startDistance = 3; startDistance >= 0; startDistance--)
             {
                 var startCell = new GameBoardCell(currentCell.Column - startDistance, currentCell.Row - startDistance);
-                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
+                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
 
                 if (canConnect)
                 {
                     return true;
                 }
             }
-
             return false;
         }
 
