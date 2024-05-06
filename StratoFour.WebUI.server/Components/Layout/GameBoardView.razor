@@ -1,0 +1,67 @@
+﻿@using StratoFour.Application;
+
+<div class="container">
+    <div class="row">
+        Current Player: <strong>@Game.GetCurrentPlayer().Name</strong>
+    </div>
+    @if (Game.IsOver())
+    {
+        <div class="row">
+            @if (Game.GetWinner() == null)
+            {
+                <h2>Game is draw</h2>
+            }
+            else
+            {
+                <h2>Winner is @Game.GetWinner().Name</h2>
+            }
+        </div>
+    }
+</div>
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="game-board-container">
+            <table class="table table-bordered" id="my-table" @onmouseout="() => highlightedColumn = -1">
+                <tbody>
+                @foreach (int row in Game.GetBoard().RowIndices())
+                {
+                    <tr>
+                        @foreach (int column in Game.GetBoard().ColumnIndices())
+                        {
+                            var currentColumn = column;
+                            <BoardCellView color="@Game.GetBoard().GetDiscColorAtCell(column, row)"
+                                           OnClickCallback="() => HandleClick(currentColumn)"
+                                           OnMouseOverCallback="() => HandleMouseOver(currentColumn)"
+                                           IsHighlighted="@(highlightedColumn == currentColumn)" />
+                        }
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .game-board-container {
+        width: 700px;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public IGame Game { get; set; }
+
+    private int highlightedColumn = -1;
+
+    private void HandleClick(int column)
+    {
+        Game.DropDisc(column);
+    }
+
+    private void HandleMouseOver(int column)
+    {
+        highlightedColumn = column;
+    }
+}
