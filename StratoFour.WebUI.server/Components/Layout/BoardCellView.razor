@@ -1,0 +1,49 @@
+﻿@using StratoFour.Application;
+
+<td class="board-cell @(IsHighlighted ? "highlight" : "")" @onclick="OnClickCallback" @onmouseover="OnMouseOverCallback">
+    <div>
+        @if (!string.IsNullOrEmpty(Color))
+        {
+            <div class="circle" style="background: @Color"></div>
+        }
+    </div>
+</td>
+
+<style>
+    .board-cell div {
+        margin: 0;
+        cursor: pointer;
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+    }
+
+    .circle {
+        height: 25px;
+        width: 25px;
+        background: black;
+        border-radius: 100px;
+        -moz-border-radius: 100px;
+        -webkit-border-radius: 100px;
+        margin-left: 25%;
+        margin-top: 25%;
+    }
+
+    td.highlight {
+        background: #efefef;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public string Color { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnMouseOverCallback { get; set; }
+
+    [Parameter]
+    public bool IsHighlighted { get; set; }
+}

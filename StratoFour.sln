@@ -5,13 +5,13 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3F90F8D3-8AB3-4B86-9B27-435668EB1F59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StratoFour.Domain", "StratoFour.Domain\StratoFour.Domain.csproj", "{5442236D-5C8A-4DEE-A230-81DE8FC394FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.Domain", "StratoFour.Domain\StratoFour.Domain.csproj", "{5442236D-5C8A-4DEE-A230-81DE8FC394FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StratoFour.Application", "StratoFour.Application\StratoFour.Application.csproj", "{10EB7B32-66CA-4BD2-9C7D-40C660D959CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.Application", "StratoFour.Application\StratoFour.Application.csproj", "{10EB7B32-66CA-4BD2-9C7D-40C660D959CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StratoFour.Infrastructure", "StratoFour.Infrastructure\StratoFour.Infrastructure.csproj", "{97238767-F22C-4CF5-9A9C-0B2E0B188952}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.Infrastructure", "StratoFour.Infrastructure\StratoFour.Infrastructure.csproj", "{97238767-F22C-4CF5-9A9C-0B2E0B188952}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StratoFour.WebUI.server", "StratoFour.WebUI.server\StratoFour.WebUI.server.csproj", "{AB43E474-8D67-4094-BC85-D56E7D546BE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.WebUI.server", "StratoFour.WebUI.server\StratoFour.WebUI.server.csproj", "{AB43E474-8D67-4094-BC85-D56E7D546BE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

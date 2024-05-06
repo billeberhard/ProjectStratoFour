@@ -10,4 +10,8 @@
     <PackageReference Include="MQTTnet" Version="4.3.3.952" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StratoFour.Application\StratoFour.Application.csproj" />
+  </ItemGroup>
+
 </Project>

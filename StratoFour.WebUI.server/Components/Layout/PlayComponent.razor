@@ -1,0 +1,55 @@
+﻿@inject NavigationManager navManager;
+@using Microsoft.AspNetCore.WebUtilities;
+@using StratoFour.Application;
+@using StratoFour.Application.BotStrategies;
+@using StratoFour.Application.Helpers;
+
+<h3 id="play">Play</h3>
+
+@if (_game == null)
+{
+    <span>Loading...</span>
+}
+else
+{
+    <GameBoardView Game="@_game"></GameBoardView>
+}
+
+@code {
+    private IGame _game;
+
+    protected override void OnInitialized()
+    {
+        // Currently, only easy level is supported for playing against computer.
+        // To support more levels, extend the form and logic.
+        var level = BotStrategyLevel.Easy;
+
+        var playerOne = CreateMainPlayerFromUri();
+        var playerTwo = CreateComputerPlayer(playerOne.Color);
+
+        _game = new Game(playerOne, playerTwo, level);
+    }
+
+    private Player CreateMainPlayerFromUri()
+    {
+        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+        var parsedQuery = QueryHelpers.ParseQuery(uri.Query);
+
+        string name = parsedQuery.GetValueOrDefault("name", "Player 1");
+        string color = parsedQuery.GetValueOrDefault("color", "#1DAC46");
+
+        return new Player(name, color);
+    }
+
+    private Player CreateComputerPlayer(string mainPlayerColor)
+    {
+        string color = ColorHelper.GetRandomColor();
+
+        while (color == mainPlayerColor)
+        {
+            color = ColorHelper.GetRandomColor();
+        }
+
+        return new Player("Computer", color);
+    }
+}
