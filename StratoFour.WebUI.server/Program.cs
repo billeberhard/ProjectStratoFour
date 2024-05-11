@@ -1,3 +1,6 @@
+using StratoFour.Infrastructure;
+using StratoFour.Infrastructure.DataAccess;
+using StratoFour.Infrastructure.DbAccess;
 using StratoFour.WebUI.server.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddTransient<IUserData, UserData>();
 
 var app = builder.Build();
 
