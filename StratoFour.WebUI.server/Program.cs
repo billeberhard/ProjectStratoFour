@@ -1,5 +1,5 @@
 using StratoFour.Infrastructure;
-using StratoFour.Infrastructure.DataAccess;
+using StratoFour.Infrastructure.Data;
 using StratoFour.Infrastructure.DbAccess;
 using StratoFour.WebUI.server.Components;
 
