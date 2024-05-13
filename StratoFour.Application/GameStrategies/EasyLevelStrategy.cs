@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StratoFour.Application.BotStrategies
+namespace StratoFour.Application.GameStrategies
 {
     class EasyLevelStrategy : IGameMode
     {

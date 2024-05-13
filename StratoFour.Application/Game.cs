@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using StratoFour.Application.Board;
-using StratoFour.Application.BotStrategies;
+using StratoFour.Application.GameStrategies;
 using StratoFour.Application;
 
 namespace StratoFour.Application

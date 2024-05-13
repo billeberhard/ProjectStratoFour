@@ -3,7 +3,7 @@ using System;
 using StratoFour.Application;
 using Xunit;
 using System.Numerics;
-using StratoFour.Application.BotStrategies;
+using StratoFour.Application.GameStrategies;
 
 namespace ConnectFourLogic.Test
 {

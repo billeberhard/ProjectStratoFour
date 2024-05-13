@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace StratoFour.Application.BotStrategies
+namespace StratoFour.Application.GameStrategies
 {
     public interface IGameMode
     {
