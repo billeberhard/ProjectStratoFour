@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StratoFour.Application.BotStrategies
 {
-    class EasyLevelStrategy : IBotStrategy
+    class EasyLevelStrategy : IGameMode
     {
         private readonly IGameBoard _board;
 
@@ -16,9 +16,9 @@ namespace StratoFour.Application.BotStrategies
             _board = board;
         }
 
-        public BotStrategyLevel GetLevel()
+        public GameModeLevel GetLevel()
         {
-            return BotStrategyLevel.Easy;
+            return GameModeLevel.Easy;
         }
 
         /// <summary>

@@ -5,9 +5,9 @@ using System.Text;
 
 namespace StratoFour.Application.BotStrategies
 {
-    public interface IBotStrategy
+    public interface IGameMode
     {
-        BotStrategyLevel GetLevel();
+        GameModeLevel GetLevel();
 
         (int, int) Play(Player currentPlayer, Player opponentPlayer);
     }
