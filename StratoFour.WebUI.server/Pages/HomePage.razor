@@ -1,0 +1,21 @@
+﻿@page "/home"
+@using Microsoft.AspNetCore.WebUtilities
+@using StratoFour.Application.Helpers
+
+@inject NavigationManager NavManager;
+<h3>HomePage</h3>
+
+<button @onclick="handleNewGame">New Game</button>
+
+
+@code {
+  
+    private void handleNewGame()
+    {
+        var query = new Dictionary<string, string> {
+            { "name", "playername" }, { "color",  ColorHelper.GetBluePlanetColor() }
+    };
+
+        NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query));
+    }
+}
