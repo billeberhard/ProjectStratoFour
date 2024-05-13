@@ -25,6 +25,11 @@ public class UserData : IUserData
         var results = await _db.LoadData<UserModel, dynamic>("dbo.spUser_Get", new { Id = id });
         return results.FirstOrDefault();
     }
+    public async Task<UserModel> GetUserByEmail(string email)
+    {
+        var results = await _db.LoadData<UserModel, dynamic>("dbo.spUser_GetByEmail", new { Email = email });
+        return results.FirstOrDefault();
+    }
 
     public Task InsertUser(UserModel user) => _db.SaveData("dbo.spUser_Insert", new { user.Username, user.Email, user.PasswordHash });
 

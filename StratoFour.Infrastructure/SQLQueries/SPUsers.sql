@@ -15,6 +15,14 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [dbo].[spUser_GetByEmail]
+    @Id INT
+AS
+BEGIN
+    SELECT UserId, Username, Email, PasswordHash FROM dbo.Users WHERE Email = @Email;
+END;
+GO
+
 CREATE PROCEDURE [dbo].[spUser_GetAll]
 AS
 BEGIN
