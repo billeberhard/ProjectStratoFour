@@ -43,11 +43,11 @@ else
 
     private Player CreateComputerPlayer(string mainPlayerColor)
     {
-        string color = ColorHelper.GetRandomColor();
+        string color = ColorHelper.GetBlackPlanetColor();
 
         while (color == mainPlayerColor)
         {
-            color = ColorHelper.GetRandomColor();
+            color = ColorHelper.GetBlackPlanetColor();
         }
 
         return new Player("Computer", color);

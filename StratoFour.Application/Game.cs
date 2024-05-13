@@ -28,7 +28,7 @@ namespace StratoFour.Application
             _playerTwo = playerTwo;
             _currentPlayer = _playerOne;
 
-            _board = new GameBoard.GameBoard();
+            _board = new GameBoard();
             _strategy = BotStrategyFactory.Create(level, _board);
         }
 
@@ -59,7 +59,7 @@ namespace StratoFour.Application
             }
 
             int droppedRow = _board.DropDisc(column, _currentPlayer);
-            if (droppedRow == GameBoard.GameBoard.InvalidRowColumn)
+            if (droppedRow == GameBoard.InvalidRowColumn)
             {
                 return;
             }
