@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace StratoFour.Application.BotStrategies
 {
-    class BotStrategyFactory
+    class GameModeFactory
     {
-        public static IBotStrategy Create(BotStrategyLevel level, IGameBoard board)
+        public static IGameMode Create(GameModeLevel level, IGameBoard board)
         {
             return level switch
             {
-                BotStrategyLevel.Easy => new EasyLevelStrategy(board),
+                GameModeLevel.Easy => new EasyLevelStrategy(board),
                 _ => throw new NotSupportedException($"Strategy {level} is not supported yet")
             };
         }
