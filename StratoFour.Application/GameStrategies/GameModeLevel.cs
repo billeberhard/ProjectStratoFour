@@ -1,7 +1,6 @@
 ﻿
-namespace StratoFour.Application.BotStrategies
-{
-    public enum BotStrategyLevel
+namespace StratoFour.Application.GameStrategies{
+    public enum GameModeLevel
     {
         MultiPlayer,
         Easy,

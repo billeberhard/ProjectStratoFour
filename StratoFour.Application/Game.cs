@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using StratoFour.Application.Board;
-using StratoFour.Application.BotStrategies;
+using StratoFour.Application.GameStrategies;
 using StratoFour.Application;
 
 namespace StratoFour.Application
@@ -18,18 +18,18 @@ namespace StratoFour.Application
 
         private Player _winner;
 
-        private readonly IBotStrategy _strategy;
+        private readonly IGameMode _strategy;
 
         private readonly IGameBoard _board;
 
-        public Game(Player playerOne, Player playerTwo, BotStrategyLevel level)
+        public Game(Player playerOne, Player playerTwo, GameModeLevel level)
         {
             _playerOne = playerOne;
             _playerTwo = playerTwo;
             _currentPlayer = _playerOne;
 
-            _board = new GameBoard.GameBoard();
-            _strategy = BotStrategyFactory.Create(level, _board);
+            _board = new GameBoard();
+            _strategy = GameModeFactory.Create(level, _board);
         }
 
         public IGameBoard GetBoard()
@@ -59,7 +59,7 @@ namespace StratoFour.Application
             }
 
             int droppedRow = _board.DropDisc(column, _currentPlayer);
-            if (droppedRow == GameBoard.GameBoard.InvalidRowColumn)
+            if (droppedRow == GameBoard.InvalidRowColumn)
             {
                 return;
             }
@@ -72,7 +72,7 @@ namespace StratoFour.Application
 
             SwitchPlayer();
 
-            if (_strategy.GetLevel() != BotStrategyLevel.MultiPlayer)
+            if (_strategy.GetLevel() != GameModeLevel.MultiPlayer)
             {
                 (int playedColumn, int playedRow) = _strategy.Play(_currentPlayer, GetOpponent());
                 CheckGameStatus(playedColumn, playedRow);

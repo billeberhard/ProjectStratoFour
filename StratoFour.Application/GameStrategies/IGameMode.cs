@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace StratoFour.Application.BotStrategies
+namespace StratoFour.Application.GameStrategies
 {
-    public interface IBotStrategy
+    public interface IGameMode
     {
-        BotStrategyLevel GetLevel();
+        GameModeLevel GetLevel();
 
         (int, int) Play(Player currentPlayer, Player opponentPlayer);
     }

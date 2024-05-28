@@ -8,10 +8,14 @@ namespace StratoFour.Application.Helpers
 {
     public class ColorHelper
     {
-        public static string GetRandomColor()
+        public static string GetBluePlanetColor()
         {
-            var random = new Random();
-            return $"#{random.Next(0x1000000):X6}";
+            return "#0000FF";
+        }
+
+        public static string GetBlackPlanetColor()
+        {
+            return "#000000";
         }
     }
 }

@@ -112,7 +112,7 @@ namespace StratoFour.Application.Board
             for (var startColumn = currentCell.Column - 3; startColumn <= currentCell.Column; startColumn++)
             {
                 var startCell = new GameBoardCell(startColumn, currentCell.Row);
-                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
+                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GetNextCellOnRight);
 
                 if (canConnect)
                 {
@@ -125,7 +125,7 @@ namespace StratoFour.Application.Board
 
         private bool CheckVertically(Player player, GameBoardCell currentCell)
         {
-            var canConnect = CanConnectFour(player, currentCell, currentCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
+            var canConnect = CanConnectFour(player, currentCell, currentCell, GameBoardNavigationHelper.GetNextCellBelow);
 
             return canConnect;
         }
@@ -135,7 +135,7 @@ namespace StratoFour.Application.Board
             for (int startDistance = 3; startDistance >= 0; startDistance--)
             {
                 var startCell = new GameBoardCell(currentCell.Column - startDistance, currentCell.Row + startDistance);
-                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
+                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GetNextCellOnRightCornerAbove);
 
                 if (canConnect)
                 {
@@ -151,7 +151,7 @@ namespace StratoFour.Application.Board
             for (int startDistance = 3; startDistance >= 0; startDistance--)
             {
                 var startCell = new GameBoardCell(currentCell.Column - startDistance, currentCell.Row - startDistance);
-                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
+                var canConnect = CanConnectFour(player, currentCell, startCell, GameBoardNavigationHelper.GetNextCellOnRightCornerBelow);
 
                 if (canConnect)
                 {

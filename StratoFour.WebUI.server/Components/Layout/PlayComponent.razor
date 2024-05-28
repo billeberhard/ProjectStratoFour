@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager navManager;
 @using Microsoft.AspNetCore.WebUtilities;
 @using StratoFour.Application;
-@using StratoFour.Application.BotStrategies;
+@using StratoFour.Application.GameStrategies;
 @using StratoFour.Application.Helpers;
 
 <h3 id="play">Play</h3>
@@ -22,7 +22,7 @@ else
     {
         // Currently, only easy level is supported for playing against computer.
         // To support more levels, extend the form and logic.
-        var level = BotStrategyLevel.Easy;
+        var level = GameModeLevel.Easy;
 
         var playerOne = CreateMainPlayerFromUri();
         var playerTwo = CreateComputerPlayer(playerOne.Color);
@@ -43,11 +43,11 @@ else
 
     private Player CreateComputerPlayer(string mainPlayerColor)
     {
-        string color = ColorHelper.GetRandomColor();
+        string color = ColorHelper.GetBlackPlanetColor();
 
         while (color == mainPlayerColor)
         {
-            color = ColorHelper.GetRandomColor();
+            color = ColorHelper.GetBlackPlanetColor();
         }
 
         return new Player("Computer", color);

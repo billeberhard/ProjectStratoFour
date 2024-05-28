@@ -1,9 +1,8 @@
-﻿using StratoFour.Application.GameBoard;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace StratoFour.Application.Board.GameBoardNavigationHelper
+namespace StratoFour.Application.Board
 {
     public class GameBoardNavigationHelper
     {
