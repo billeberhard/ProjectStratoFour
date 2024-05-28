@@ -16,7 +16,7 @@ END;
 GO
 
 CREATE PROCEDURE [dbo].[spUser_GetByEmail]
-    @Id INT
+    @Email NVARCHAR(100)
 AS
 BEGIN
     SELECT UserId, Username, Email, PasswordHash FROM dbo.Users WHERE Email = @Email;

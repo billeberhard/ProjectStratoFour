@@ -1,23 +1,24 @@
 CREATE TABLE Users (
-    UserId INT PRIMARY KEY,
+    UserId INT IDENTITY(1,1) PRIMARY KEY,
     Username NVARCHAR(50) NOT NULL,
     PasswordHash NVARCHAR(100) NOT NULL,
     Email NVARCHAR(100) NOT NULL,
-    RegistrationDate DATETIME NOT NULL
+    EmailVerification BIT  
 );
 
 CREATE TABLE Robots (
-    RobotId INT PRIMARY KEY,
+    RobotId INT IDENTITY(1,1) PRIMARY KEY,
     RobotName NVARCHAR(50) NOT NULL,
     RobotStatus NVARCHAR(50) NOT NULL CHECK (RobotStatus IN ('In Use', 'Ready', 'Inactive'))
 );
 
 CREATE TABLE Games (
-    GameId INT PRIMARY KEY,
+    GameId INT IDENTITY(1,1) PRIMARY KEY,
     Player1Id INT,
     Player2Id INT,
     RobotId INT NOT NULL,
     StartTime DATETIME NOT NULL,
+    GameMode NVARCHAR(50),
     WinnerId INT,
     FOREIGN KEY (Player1Id) REFERENCES Users(UserId),
     FOREIGN KEY (Player2Id) REFERENCES Users(UserId),
@@ -26,7 +27,7 @@ CREATE TABLE Games (
 );
 
 CREATE TABLE Moves (
-    MoveId INT PRIMARY KEY,
+    MoveId INT IDENTITY(1,1) PRIMARY KEY,
     GameId INT,
     PlayerId INT,
     ColumnIndex INT NOT NULL,

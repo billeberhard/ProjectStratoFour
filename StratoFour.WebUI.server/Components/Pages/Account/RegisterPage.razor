@@ -1,0 +1,89 @@
+﻿@page "/register"
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using StratoFour.Application.ViewModels
+@using StratoFour.Infrastructure.Data
+@using StratoFour.Infrastructure.Models
+@using System.Security.Claims
+@inject IUserData UserData
+@inject NavigationManager navigationManager
+
+<PageTitle>Register</PageTitle>
+<h3>RegisterPage</h3>
+
+<div class="row">
+    <div class="col-md-4">
+        @* <StatusMessage Message="@Message" /> *@
+        <EditForm Model="@Model" @* asp-route-returnUrl="@ReturnUrl" *@ @* method="post" *@ OnValidSubmit="RegisterUser" FormName="RegisterForm">
+            <DataAnnotationsValidator />
+            <h2>Create a new account.</h2>
+            <hr />
+            <ValidationSummary class="text-danger" role="alert" />
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Model.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label for="email" class="form-label">Email</label>
+                <ValidationMessage For="() => Model.Email" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Model.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="user1" />
+                <label for="username">Username</label>
+                <ValidationMessage For="() => Model.UserName" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText type="password" @bind-Value="Model.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label for="password">Password</label>
+                <ValidationMessage For="() => Model.Password" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText type="password" @bind-Value="Model.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label for="confirm-password">Confirm Password</label>
+                <ValidationMessage For="() => Model.ConfirmPassword" class="text-danger" />
+            </div>
+            <div class="mb-3 text-center">
+                <span class="text-danger">@errorMessage</span>
+            </div>
+            <div>
+                <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            </div>            
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    [SupplyParameterFromForm]
+    public RegisterViewModel Model { get; set; } = new();
+    private string? errorMessage;
+
+    private async Task RegisterUser()
+    {
+        var newUser = new UserModel
+            {
+                Email = Model.Email,
+                Username = Model.UserName,
+                PasswordHash = Model.Password,
+                EmailConfirmed = false
+            };
+
+        await UserData.InsertUser(newUser);
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Email, Model.Email)
+        };
+
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+        await HttpContext.SignInAsync(principal);
+        navigationManager.NavigateTo("/");
+    }
+
+    // private async Task SendEmailConfirmation(UserModel user)
+    // {
+    //     ThrowIfDisposed();
+    //     GenerateUserTokenAsync(user, Options.Tokens.EmailConfirmationTokenProvider, ConfirmEmailTokenPurpose);
+    // }
+}
+  
