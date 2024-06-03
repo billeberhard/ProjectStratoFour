@@ -3,6 +3,8 @@ using StratoFour.Infrastructure;
 using StratoFour.Infrastructure.Data;
 using StratoFour.Infrastructure.DbAccess;
 using StratoFour.WebUI.server.Components;
+using StratoFour.Domain;
+using System.ComponentModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddHostedService<BackGroundWorkerService>();
 
 var app = builder.Build();
 
