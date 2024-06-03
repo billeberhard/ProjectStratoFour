@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StratoFour.Infrastructure\StratoFour.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

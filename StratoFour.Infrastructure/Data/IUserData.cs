@@ -6,6 +6,7 @@ namespace StratoFour.Infrastructure.Data
     {
         Task DeleteUser(int id);
         Task<UserModel> GetUser(int id);
+        Task<UserModel> GetUserByEmail(string email);
         Task<IEnumerable<UserModel>> GetUsers();
         Task InsertUser(UserModel user);
         Task UpdateUser(UserModel user);
