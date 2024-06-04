@@ -24,6 +24,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddHostedService<BackGroundWorkerService>();
+builder.Services.AddScoped<BackGroundWorkerService>();
 
 var app = builder.Build();
 
