@@ -80,9 +80,9 @@ public class BackGroundWorkerService : BackgroundService
         await _mqttClient.DisconnectAsync();
     }
 
-    public async Task SendRequestAsync(int player)
+    public async Task SendPlayerTurnRequestAsync(int player, int row)
     {
-        string playerCommand = "4$" + player.ToString();
+        string playerCommand = row.ToString() + "$" + player.ToString();
         var message = new MqttApplicationMessageBuilder()
             .WithTopic("send_from_app/position")
             .WithPayload(playerCommand)

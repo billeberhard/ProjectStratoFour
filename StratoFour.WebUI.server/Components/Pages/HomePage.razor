@@ -1,8 +1,10 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.WebUtilities
+@using StratoFour.Domain
 @using StratoFour.Application.Helpers
 @inject NavigationManager NavManager
+@inject BackGroundWorkerService WorkerService
 
 <h3>HomePage</h3>
 
@@ -15,12 +17,12 @@
             <div class="card-body">
                 <AuthorizeView>
                     <NotAuthorized>
-                        <span>You are not logged in. pLease <a class="fw-bolder" href="/login">click here</a></span>
+                        <span>You are not logged in. Please <a class="fw-bolder" href="/login">click here</a></span>
                     </NotAuthorized>
                     <Authorized>
                         <span>Logged in as <b>@context.User.Identity.Name</b> <a class="fw-bolder" href="/logout"></a>  </span>
-                        <button @onclick="@(async () => await SendRequest(1))">Verbindungstest Spieler1</button>
-                        <button @onclick="@(async () => await SendRequest(2))">Verbindungstestp Spieler2</button>
+                        <button @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(1, 1))">Verbindungstest Spieler1</button>
+                        <button @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(2, 2))">Verbindungstest Spieler2</button>
                         <button @onclick="HandleNewGame">New Game</button>
                     </Authorized>
                 </AuthorizeView>
@@ -32,28 +34,6 @@
 
 
 @code {
-    private async Task SendRequest(int player)
-    {
-        var factory = new MQTTnet.MqttFactory();
-        var mqttClient = factory.CreateMqttClient();
-
-        var options = new MQTTnet.Client.MqttClientOptionsBuilder()
-            .WithTcpServer("localhost", 1883) // Hier die IP-Adresse und Portnummer des MQTT-Brokers eintragen
-            .Build();
-
-        await mqttClient.ConnectAsync(options);
-        string playerCommand = "4$" + player.ToString();
-        var message = new MQTTnet.MqttApplicationMessageBuilder()
-            .WithTopic("send_from_app/position") // Hier das Topic eintragen, über das der Roboter Nachrichten empfängt
-            .WithPayload(playerCommand)
-            .WithRetainFlag()
-            .Build();
-
-        await mqttClient.PublishAsync(message);
-
-        await mqttClient.DisconnectAsync(null);
-    }
-
     private void HandleNewGame()
     {
         var query = new Dictionary<string, string>
@@ -61,7 +41,7 @@
             {"name", "playername" }, {"color", ColorHelper.GetBluePlanetColor()}
         };
 
-        NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query)); 
+        NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query));
     }
 
 }
