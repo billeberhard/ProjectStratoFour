@@ -1,8 +1,10 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.AspNetCore.Components.Authorization
 @using StratoFour.Application.Helpers
-@inject NavigationManager NavManager
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h3>HomePage</h3>
 
@@ -15,10 +17,10 @@
             <div class="card-body">
                 <AuthorizeView>
                     <NotAuthorized>
-                        <span>You are not logged in. pLease <a class="fw-bolder" href="/login">click here</a></span>
+                        <span>You are not logged in. Please <a class="fw-bolder" href="/login">click here</a></span>
                     </NotAuthorized>
                     <Authorized>
-                        <span>Logged in as <b>@context.User.Identity.Name</b> <a class="fw-bolder" href="/logout"></a>  </span>
+                        <span>Logged in as <b>@userName</b><a class="fw-bolder" href="/logout"></a>  </span>
                         <button @onclick="@(async () => await SendRequest(1))">Verbindungstest Spieler1</button>
                         <button @onclick="@(async () => await SendRequest(2))">Verbindungstestp Spieler2</button>
                         <button @onclick="HandleNewGame">New Game</button>
@@ -32,6 +34,13 @@
 
 
 @code {
+    private string userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userName = await AuthService.GetUsernameAsync();
+    }
+
     private async Task SendRequest(int player)
     {
         var factory = new MQTTnet.MqttFactory();
@@ -56,12 +65,11 @@
 
     private void HandleNewGame()
     {
-        var query = new Dictionary<string, string>
-        {
-            {"name", "playername" }, {"color", ColorHelper.GetBluePlanetColor()}
-        };
+        var query = new Dictionary<string, string> {
+            { "name", userName }, { "color",  ColorHelper.GetBluePlanetColor() }
+    };
 
-        NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query)); 
+        NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query));
     }
-
 }
+

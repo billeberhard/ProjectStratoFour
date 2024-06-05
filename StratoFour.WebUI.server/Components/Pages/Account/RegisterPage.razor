@@ -2,11 +2,10 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
 @using StratoFour.Application.ViewModels
-@using StratoFour.Infrastructure.Data
+@using StratoFour.Application.UserMatching
 @using StratoFour.Infrastructure.Models
 @using System.Security.Claims
-@inject IUserData UserData
-@inject NavigationManager navigationManager
+@inject IUserService UserService
 
 <PageTitle>Register</PageTitle>
 <h3>RegisterPage</h3>
@@ -64,10 +63,11 @@
                 Email = Model.Email,
                 Username = Model.UserName,
                 PasswordHash = Model.Password,
-                EmailConfirmed = false
+                EmailConfirmed = false,
+                ConnectionId = "1234"
             };
 
-        await UserData.InsertUser(newUser);
+        await UserService.AddUserAsync(newUser);
 
         var claims = new List<Claim>
         {
@@ -77,13 +77,7 @@
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
         await HttpContext.SignInAsync(principal);
-        navigationManager.NavigateTo("/");
+        NavManager.NavigateTo("/");
     }
-
-    // private async Task SendEmailConfirmation(UserModel user)
-    // {
-    //     ThrowIfDisposed();
-    //     GenerateUserTokenAsync(user, Options.Tokens.EmailConfirmationTokenProvider, ConfirmEmailTokenPurpose);
-    // }
 }
   
