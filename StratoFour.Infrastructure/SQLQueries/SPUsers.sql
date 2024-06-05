@@ -11,7 +11,7 @@ CREATE PROCEDURE [dbo].[spUser_Get]
     @Id INT
 AS
 BEGIN
-    SELECT UserId, Username, Email, PasswordHash FROM dbo.Users WHERE UserId = @Id;
+    SELECT UserId, Username, Email, PasswordHash, ConnectionId FROM dbo.Users WHERE UserId = @Id;
 END;
 GO
 
@@ -19,14 +19,14 @@ CREATE PROCEDURE [dbo].[spUser_GetByEmail]
     @Email NVARCHAR(100)
 AS
 BEGIN
-    SELECT UserId, Username, Email, PasswordHash FROM dbo.Users WHERE Email = @Email;
+    SELECT UserId, Username, Email, PasswordHash, ConnectionId  FROM dbo.Users WHERE Email = @Email;
 END;
 GO
 
 CREATE PROCEDURE [dbo].[spUser_GetAll]
 AS
 BEGIN
-    SELECT UserId, Username, Email FROM dbo.Users;
+    SELECT UserId, Username, Email, ConnectionId FROM dbo.Users;
 END;
 GO
 
@@ -45,11 +45,12 @@ CREATE PROCEDURE [dbo].[spUser_Update]
     @Id INT,
     @Username NVARCHAR(50),
     @Email NVARCHAR(100),
-    @PasswordHash NVARCHAR(100)
+    @PasswordHash NVARCHAR(100), 
+    @ConnectionId NVARCHAR(100)
 AS
 BEGIN
     UPDATE dbo.Users
-    SET Username = @Username, Email = @Email, PasswordHash = @PasswordHash
+    SET Username = @Username, Email = @Email, PasswordHash = @PasswordHash, ConnectionId = @ConnectionId
     WHERE UserId = @Id;
 END;
 GO
