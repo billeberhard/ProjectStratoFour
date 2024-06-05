@@ -1,6 +1,36 @@
 ﻿@page "/queue"
 <h3>QueuePage</h3>
 
-@code {
+@if (matchedUser != null)
+{
+    <p>Matched with @matchedUser</p>
+    <button @onclick="ConfirmMatch">Confirm Match</button>
+}
+else
+{
+    <ul>
+        @foreach (var user in users)
+        {
+            <li>@user <button @onclick="() => SendMatchRequest(user)">Send Match Request</button></li>
+        }
+    </ul>
+}
 
+@code {
+    private List<string> users = new List<string> { "User1", "User2", "User3" };
+    private string matchedUser;
+
+    private void SendMatchRequest(string user)
+    {
+        // Send match request to the selected user
+        // You can implement this logic using SignalR
+        matchedUser = user;
+    }
+
+    private void ConfirmMatch()
+    {
+        // Confirm the match and start the game
+        // You can navigate to the game page or handle game initialization here
+        NavManager.NavigateTo("/game");
+    }
 }
