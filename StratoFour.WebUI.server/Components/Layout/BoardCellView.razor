@@ -1,12 +1,7 @@
 ﻿@using StratoFour.Application;
 
 <td class="board-cell @(IsHighlighted ? "highlight" : "")" @onclick="OnClickCallback" @onmouseover="OnMouseOverCallback">
-    <div>
-        @if (!string.IsNullOrEmpty(Color))
-        {
-            <div class="circle" style="background: @Color"></div>
-        }
-    </div>
+    <div class="@(GetCircleClass(Color))"></div>
 </td>
 
 <style>
@@ -21,13 +16,21 @@
     .circle {
         height: 25px;
         width: 25px;
-        background: black;
-        border-radius: 100px;
-        -moz-border-radius: 100px;
-        -webkit-border-radius: 100px;
-        margin-left: 25%;
-        margin-top: 25%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin-left: 0;
+        margin-top: 0;
+        border-radius: 0;
     }
+
+        .circle.blue {
+            background-image: url('/images/Spielstein_Blau.png');
+        }
+
+        .circle.black {
+            background-image: url('/images/Spielstein_Schwarz.png');
+        }
 
     td.highlight {
         background: #efefef;
@@ -46,4 +49,17 @@
 
     [Parameter]
     public bool IsHighlighted { get; set; }
+
+    private string GetCircleClass(string color)
+    {
+        switch (color)
+        {
+            case "#000000":
+                return "circle black";
+            case "#0000FF":
+                return "circle blue";
+            default: // Leer
+                return "circle empty"; 
+        }
+    }
 }
