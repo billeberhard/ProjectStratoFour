@@ -13,18 +13,16 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-@*                 <AuthorizeView>
+                <AuthorizeView>
                     <NotAuthorized>
                         <span>You are not logged in. Please <a class="fw-bolder" href="/login">click here</a></span>
                     </NotAuthorized>
-                    <Authorized> *@
-                        <span>Logged in as <b>bill</b> <a class="fw-bolder" href="/logout"></a>  </span>
-@*                         <button @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(1, 1))">Verbindungstest Spieler1</button>
-                        <button @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(2, 2))">Verbindungstest Spieler2</button> *@
+                    <Authorized>
+                        <span>Logged in as <b>@context.User.Identity.Name</b> <a class="fw-bolder" href="/logout"></a>  </span>
                         <button @onclick="HandleNewGame">New Game</button>
                         <button @onclick="HandleSettingsClick">Settings</button>
-@*                     </Authorized>
-                </AuthorizeView> *@
+                    </Authorized>
+                </AuthorizeView>
             </div>
         </div>
     </div>
