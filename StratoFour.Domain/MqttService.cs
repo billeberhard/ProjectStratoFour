@@ -1,61 +1,58 @@
-﻿using MQTTnet;
+﻿using Microsoft.Extensions.Hosting;
+using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Client.Internal;
 using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace name.Domain
+namespace StratoFour.Domain;
+public class MqttService : BackgroundService
 {
-    public class MqttService
+    private IMqttClient _mqttClient;
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        private IMqttClient _mqttClient;
+        //MQTT Static variables
+        string serverString = "localhost";
+        int defaultPort = 1883;
 
-        public async Task StartAsync()
+        //maybe needed
+        //string broker = "******.emqxsl.com";
+        //string clientId = Guid.NewGuid().ToString();
+        //string topic = "Csharp/mqtt";
+        //string username = "emqxtest";
+        //string password = "******";
+
+        //Create MQTT Client Factory
+        var factory = new MqttFactory();
+
+        //Create MQTT client Instance
+        _mqttClient = factory.CreateMqttClient();
+
+        //Create Client Options
+        var options = new MqttClientOptionsBuilder()
+           .WithTcpServer(serverString, defaultPort) // MQTT broker address and port
+                                                     //.WithCredentials(username, password) // Set username and password
+                                                     //.WithClientId(clientId)
+           .WithCleanSession()
+           .Build();
+    }
+        
+
+    public async Task SendRequestAsync(int player)
+    {
+        string playerCommand = "4$" + player.ToString();
+        var message = new MqttApplicationMessageBuilder()
+            .WithTopic("send_from_app/position")
+            .WithPayload(playerCommand)
+            .WithRetainFlag()
+            .Build();
+
+        if (_mqttClient.IsConnected)
         {
-            var factory = new MqttFactory();
-            _mqttClient = factory.CreateMqttClient();
-
-            var options = new MqttClientOptionsBuilder()
-                .WithTcpServer("your_mqtt_broker_address") // MQTT Broker Adresse hier einfügen
-                .Build();
-
-            //_mqttClient.UseConnectedHandler(async e =>
-            //{
-            //    Console.WriteLine("Connected to MQTT broker.");
-            //    // Hier könntest du weitere Aktionen ausführen, sobald die Verbindung hergestellt ist
-            //});
-
-            //_mqttClient.UseDisconnectedHandler(async e =>
-            //{
-            //    Console.WriteLine("Disconnected from MQTT broker.");
-            //    // Hier könntest du Logik für den Umgang mit einer getrennten Verbindung implementieren
-            //});
-
-            //_mqttClient.UseApplicationMessageReceivedHandler(e =>
-            //{
-            //    Console.WriteLine($"Received message: {Encoding.UTF8.GetString(e.ApplicationMessage.Payload)}");
-            //    // Hier könntest du Logik zum Verarbeiten von empfangenen Nachrichten implementieren
-            //});
-
-            await _mqttClient.ConnectAsync(options, CancellationToken.None);
-        }
-
-        public async Task PublishAsync(string topic, string payload)
-        {
-            var message = new MqttApplicationMessageBuilder()
-                .WithTopic(topic)
-                .WithPayload(payload)
-                //.WithExactlyOnceQoS()
-                .WithRetainFlag()
-                .Build();
-
-            await _mqttClient.PublishAsync(message, CancellationToken.None);
-        }
-
-        public async Task StopAsync()
-        {
-            await _mqttClient.DisconnectAsync();
+            await _mqttClient.PublishAsync(message);
         }
     }
 }
