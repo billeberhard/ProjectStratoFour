@@ -1,5 +1,8 @@
 ﻿@page "/settings"
+
+@using StratoFour.Domain
 @inject NavigationManager NavManager
+@inject BackGroundWorkerService WorkerService
 @rendermode InteractiveServer
 <h3>Change Password</h3>
 
@@ -16,6 +19,10 @@
     <div class="button-container">
         <button @onclick="Save">Save</button>
         <button @onclick="Cancel">Cancel</button>
+    </div>
+    <div>
+        <button @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(1, 1))">Verbindungstest Spieler1</button>
+        <button @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(2, 2))">Verbindungstest Spieler2</button>
     </div>
 </div>
 
