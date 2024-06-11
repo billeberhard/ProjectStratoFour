@@ -20,11 +20,12 @@ public class UserData : IUserData
     public Task<IEnumerable<UserModel>> GetUsers() =>
         _db.LoadData<UserModel, dynamic>("dbo.spUser_GetAll", new { });
 
-    public async Task<UserModel> GetUser(int id)
+    public async Task<UserModel> GetUserById(int id)
     {
-        var results = await _db.LoadData<UserModel, dynamic>("dbo.spUser_Get", new { Id = id });
+        var results = await _db.LoadData<UserModel, dynamic>("dbo.spUser_Get", new { UserId = id });
         return results.FirstOrDefault();
     }
+
     public async Task<UserModel> GetUserByEmail(string email)
     {
         var results = await _db.LoadData<UserModel, dynamic>("dbo.spUser_GetByEmail", new { Email = email });
@@ -36,5 +37,5 @@ public class UserData : IUserData
 
     public Task UpdateUser(UserModel user) => _db.SaveData("dbo.spUser_Update", user);
 
-    public Task DeleteUser(int id) => _db.SaveData("dbo.spUser_Delete", new { Id = id });
+    public Task DeleteUser(int id) => _db.SaveData("dbo.spUser_Delete", new { UserId = id });
 }

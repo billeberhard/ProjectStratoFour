@@ -17,20 +17,39 @@ namespace StratoFour.Infrastructure.Data
             _db = db;
         }
 
-        public Task<IEnumerable<GameModel>> GetGame() =>
+        public Task<IEnumerable<GameModel>> GetGames() =>
             _db.LoadData<GameModel, dynamic>("dbo.spGame_GetAll", new { });
 
         public async Task<GameModel> GetGame(int id)
         {
-            var results = await _db.LoadData<GameModel, dynamic>("dbo.spGame_Get", new { Id = id });
+            var results = await _db.LoadData<GameModel, dynamic>("dbo.spGame_Get", new { GameId = id });
             return results.FirstOrDefault();
         }
 
-        public Task InsertGame(GameModel game) => _db.SaveData("dbo.spGame_Insert", new { game.Player1Id, game.Player2Id, game.RobotId });
+        public async Task<int> CreateGame(GameModel game)
+        {
+            var parameters = new
+            {
+                game.Player1Id,
+                game.Player2Id,
+                game.RobotId,
+                StartTime = game.StartTime,
+                IsActive = game.IsActive
+            };
+            var result = await _db.LoadData<int, dynamic>("dbo.spGame_Insert", parameters);
+            return result.FirstOrDefault();
+        }
 
+        public Task UpdateGame(GameModel game) =>
+            _db.SaveData("dbo.spGame_Update", new { game.GameId, game.WinnerId, game.IsActive });
 
-        public Task UpdateGame(GameModel game) => _db.SaveData("dbo.spGame_Update", game);
+        public Task DeleteGame(int id) =>
+            _db.SaveData("dbo.spGame_Delete", new { GameId = id });
 
-        public Task DeleteGame(int id) => _db.SaveData("dbo.spGame_Delete", new { Id = id });
+        public async Task<GameModel> GetActivGameSession(int userId)
+        {
+            var results = await _db.LoadData<GameModel, dynamic>("dbo.spGame_GetActive", new { UserId = userId });
+            return results.FirstOrDefault();
+        }
     }
 }

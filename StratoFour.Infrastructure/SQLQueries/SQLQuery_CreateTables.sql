@@ -3,8 +3,9 @@ CREATE TABLE Users (
     Username NVARCHAR(50) NOT NULL,
     PasswordHash NVARCHAR(100) NOT NULL,
     Email NVARCHAR(100) NOT NULL,
-    EmailVerification BIT  
-);
+    EmailVerification BIT,
+    ConnectionId NVARCHAR(100)
+    );
 
 CREATE TABLE Robots (
     RobotId INT IDENTITY(1,1) PRIMARY KEY,
@@ -20,6 +21,7 @@ CREATE TABLE Games (
     StartTime DATETIME NOT NULL,
     GameMode NVARCHAR(50),
     WinnerId INT,
+    IsActive BIT,
     FOREIGN KEY (Player1Id) REFERENCES Users(UserId),
     FOREIGN KEY (Player2Id) REFERENCES Users(UserId),
     FOREIGN KEY (WinnerId) REFERENCES Users(UserId),

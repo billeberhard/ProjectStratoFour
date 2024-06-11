@@ -1,45 +1,59 @@
 -- Stored Procedures Robot
-CREATE PROCEDURE [dbo].[spRobot_Delete]
-    @Id INT
+CREATE PROCEDURE spRobot_GetReady
 AS
 BEGIN
-    DELETE FROM dbo.Robots WHERE RobotId = @Id;
+    SELECT TOP 1 *
+    FROM Robots
+    WHERE RobotStatus = 'Ready';
 END;
 GO
 
-CREATE PROCEDURE [dbo].[spRobot_Get]
-    @Id INT
+CREATE PROCEDURE spRobot_GetAll
 AS
 BEGIN
-    SELECT RobotId, RobotName, RobotStatus FROM dbo.Robots WHERE RobotId = @Id;
+    SELECT * FROM Robots;
 END;
 GO
 
-CREATE PROCEDURE [dbo].[spRobot_GetAll]
+CREATE PROCEDURE spRobot_GetById
+    @RobotId INT
 AS
 BEGIN
-    SELECT RobotId, RobotName, RobotStatus FROM dbo.Robots;
+    SELECT * FROM Robots WHERE RobotId = @RobotId;
 END;
 GO
 
-CREATE PROCEDURE [dbo].[spRobot_Insert]
+CREATE PROCEDURE spRobot_Insert
     @RobotName NVARCHAR(50),
     @RobotStatus NVARCHAR(50)
 AS
 BEGIN
-    INSERT INTO dbo.Robots (RobotName, RobotStatus)
+    INSERT INTO Robots (RobotName, RobotStatus)
     VALUES (@RobotName, @RobotStatus);
+    
+    SELECT SCOPE_IDENTITY() AS RobotId;
 END;
 GO
 
-CREATE PROCEDURE [dbo].[spRobot_Update]
-    @Id INT,
+CREATE PROCEDURE spRobot_Update
+    @RobotId INT,
     @RobotName NVARCHAR(50),
     @RobotStatus NVARCHAR(50)
 AS
 BEGIN
-    UPDATE dbo.Robots
+    UPDATE Robots
     SET RobotName = @RobotName, RobotStatus = @RobotStatus
-    WHERE RobotId = @Id;
+    WHERE RobotId = @RobotId;
+END;
+GO
+
+CREATE PROCEDURE spRobot_UpdateStatus
+    @RobotId INT,
+    @RobotStatus NVARCHAR(50)
+AS
+BEGIN
+    UPDATE Robots
+    SET RobotStatus = @RobotStatus
+    WHERE RobotId = @RobotId;
 END;
 GO

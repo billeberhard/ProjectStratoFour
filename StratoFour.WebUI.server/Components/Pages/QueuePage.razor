@@ -1,6 +1,196 @@
 ﻿@page "/queue"
-<h3>QueuePage</h3>
+@rendermode InteractiveServer
+@using Application.UserMatching
+@using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.AspNetCore.SignalR.Client
+@using StratoFour.Infrastructure.Models
+@using StratoFour.Application.Helpers
+@inject IUserService UserService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>Choose Game Mode</h3>
+
+<AuthorizeView>
+    <NotAuthorized>
+        <p>Please login to play.</p>
+    </NotAuthorized>
+    <Authorized>
+        <p>Connected as @userName</p>
+        <button @onclick="PlayAgainstComputer">Play Against Computer</button>
+        <button @onclick="PlayAgainstUser">Play Against User</button>
+    </Authorized>
+</AuthorizeView>
+
+@if (isWaitingForOpponent)
+{
+    <h3>Waiting for an opponent...</h3>
+}
+
+@if (matchedOpponent != null)
+{
+    <h3>Opponent found: @matchedOpponent.Username</h3>
+    <button @onclick="AcceptMatch">Accept</button>
+    <button @onclick="DeclineMatch">Decline</button>
+}
+
 
 @code {
+    private string userName;
+    private string email;
+    private int userId;
+    private HubConnection? hubConnection;
+    private bool isWaitingForOpponent = false;
+    private UserModel matchedOpponent;
+    public bool IsConnected =>
+    hubConnection?.State == HubConnectionState.Connected;
 
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            email = await AuthService.GetEmailAsync();
+            userName = await AuthService.GetUsernameAsync();
+
+            if (email != null)
+            {
+                hubConnection = new HubConnectionBuilder()
+                    .WithUrl(NavManager.ToAbsoluteUri("/gamehub"))
+                    .Build();
+
+                hubConnection.On<int>("ReceiveUserId", (id) =>
+                {
+                    userId = id;
+                });
+
+                hubConnection.On("WaitingForOpponent", () =>
+                {
+                    InvokeAsync(() =>
+                    {
+                        isWaitingForOpponent = true;
+                        StateHasChanged();
+                    });
+
+                });
+
+                hubConnection.On<UserModel>("MatchFound", (opponent) =>
+                {
+                    InvokeAsync(() =>
+                    {
+                        isWaitingForOpponent = false;
+                        matchedOpponent = opponent;
+                        StateHasChanged();
+                    });
+                });
+
+                hubConnection.On<int, string>("StartGame", (sessionId, role) =>
+                {
+                    NavManager.NavigateTo($"/game/{sessionId}/{role}");
+                });
+
+                await hubConnection.StartAsync();
+                Console.WriteLine("Hub connection started.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error in OnInitializedAsync: {ex.Message}");
+            throw;
+        }
+    }
+    private async Task ConnectUser()
+    {
+        try
+        {
+            if (hubConnection.State == HubConnectionState.Disconnected)
+            {
+                await hubConnection.StartAsync();
+                Console.WriteLine($"Hub connection restarted. {hubConnection.State}, {hubConnection.ConnectionId}");
+            }
+            await hubConnection.InvokeAsync("ConnectUser", email);
+            Console.WriteLine("User connected.");
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error in ConnectUser: {ex.Message}");
+            throw;
+        }
+    }
+
+    private void PlayAgainstComputer()
+    {
+        var query = new Dictionary<string, string> {
+            { "name", userName }, { "color",  ColorHelper.GetBluePlanetColor() }
+        };
+
+        NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query));
+        
+    }
+
+    private async Task PlayAgainstUser()
+    {
+        try
+        {
+            await ConnectUser();
+
+            if (hubConnection.State == HubConnectionState.Connected)
+            {
+                await hubConnection.InvokeAsync("FindGame", email);
+                Console.WriteLine("Finding game.");
+            }
+            else
+            {
+                Console.Error.WriteLine("Hub connection is not active. Unable to find game.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error in PlayAgainstUser: {ex.Message}");
+            throw;
+        }
+    }
+
+    private async Task AcceptMatch()
+    {
+        try
+        {
+            if (hubConnection.State == HubConnectionState.Connected)
+            {
+                await hubConnection.InvokeAsync("AcceptMatch", userId, matchedOpponent.UserId);
+            }
+            else
+            {
+                Console.Error.WriteLine("The connection is not active. Unable to accept the match.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error in AcceptMatch: {ex.Message}");
+            throw;
+        }
+    }
+
+    private async Task DeclineMatch()
+    {
+        try
+        {
+            if (hubConnection.State == HubConnectionState.Connected)
+            {
+                await hubConnection.InvokeAsync("DeclineMatch", userId);
+                await InvokeAsync(() =>
+                {
+                    matchedOpponent = null;
+                    isWaitingForOpponent = false;
+                });
+            }
+            else
+            {
+                Console.Error.WriteLine("The connection is not active. Unable to decline the match.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error in DeclineMatch: {ex.Message}");
+            throw;
+        }
+    }
 }

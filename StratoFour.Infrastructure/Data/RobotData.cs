@@ -17,19 +17,31 @@ public class RobotData : IRobotData
         _db = db;
     }
 
-    public Task<IEnumerable<RobotModel>> GetRobots() =>
-        _db.LoadData<RobotModel, dynamic>("dbo.spUser_GetAll", new { });
+    public Task<IEnumerable<RobotModel>> GetAllRobots() =>
+        _db.LoadData<RobotModel, dynamic>("dbo.spRobot_GetAll", new { });
 
-    public async Task<RobotModel> GetRobots(int id)
+    public async Task<RobotModel> GetRobotById(int robotId)
     {
-        var results = await _db.LoadData<RobotModel, dynamic>("dbo.spRobot_Get", new { Id = id });
+        var results = await _db.LoadData<RobotModel, dynamic>("dbo.spRobot_GetById", new { RobotId = robotId });
         return results.FirstOrDefault();
     }
 
-    public Task InsertRobots(RobotModel robot) => _db.SaveData("dbo.spRobot_Insert", new { robot.RobotName, robot.RobotStatus });
+    public async Task<RobotModel> GetReadyRobot()
+    {
+        var results = await _db.LoadData<RobotModel, dynamic>("dbo.spRobot_GetReady", new { });
+        return results.FirstOrDefault();
+    }
 
+    public async Task<int> InsertRobot(RobotModel robot)
+    {
+        var result = await _db.LoadData<int, dynamic>("dbo.spRobot_Insert", new { robot.RobotName, robot.RobotStatus });
+        return result.FirstOrDefault();
+    }
 
-    public Task UpdateRobot(RobotModel robot) => _db.SaveData("dbo.spRobot_Update", robot);
+    public Task UpdateRobot(RobotModel robot) =>
+        _db.SaveData("dbo.spRobot_Update", new { robot.RobotId, robot.RobotName, robot.RobotStatus });
 
-    public Task DeleteRobot(int id) => _db.SaveData("dbo.spRobot_Delete", new { Id = id });
+    public Task UpdateRobotStatus(int robotId, string robotStatus) =>
+    _db.SaveData("dbo.spRobot_UpdateStatus", new { RobotId = robotId, RobotStatus = robotStatus });
+
 }

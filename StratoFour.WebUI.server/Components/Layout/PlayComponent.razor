@@ -1,5 +1,4 @@
-﻿@inject NavigationManager navManager;
-@using Microsoft.AspNetCore.WebUtilities;
+﻿@using Microsoft.AspNetCore.WebUtilities;
 @using StratoFour.Application;
 @using StratoFour.Application.GameStrategies;
 @using StratoFour.Application.Helpers;
@@ -34,7 +33,7 @@ else
 
     private Player CreateMainPlayerFromUri()
     {
-        var uri = navManager.ToAbsoluteUri(navManager.Uri);
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
         var parsedQuery = QueryHelpers.ParseQuery(uri.Query);
 
         string name = parsedQuery.GetValueOrDefault("name", "Player 1");
@@ -56,7 +55,7 @@ else
     }
     private void Surrender()
     {
-        navManager.NavigateTo("/");
+        NavManager.NavigateTo("/");
     }
     private void Rematch()
     {

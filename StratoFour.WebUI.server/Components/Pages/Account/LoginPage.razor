@@ -3,10 +3,10 @@
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
 @using StratoFour.Application.ViewModels
+@using StratoFour.Application.UserMatching
 @using StratoFour.Infrastructure.Data
 @using System.Security.Claims
-@inject IUserData UserData
-@inject NavigationManager navigationManager
+@inject IUserService UserService
 
 <h3>LoginPage</h3>
 
@@ -60,7 +60,7 @@
 
     private async Task Authenticate()
     {
-        var userAccount = await UserData.GetUserByEmail(Model.Email); 
+        var userAccount = await UserService.GetUserByEmailAsync(Model.Email); 
         if (userAccount is null || userAccount.PasswordHash != Model.Password)
         {
             errorMessage = "Invalid User Name or Password";
@@ -70,12 +70,11 @@
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Email, Model.Email),
-            // new Claim(ClaimTypes.Role, userAccount.Role)
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
         await HttpContext.SignInAsync(principal);
-        navigationManager.NavigateTo("/"); 
+        NavManager.NavigateTo("/"); 
     }
 }

@@ -6,6 +6,12 @@
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
+@using StratoFour.Application.UserMatching
 @using StratoFour.WebUI.server
 @using StratoFour.WebUI.server.Components
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components
+@using StratoFour.WebUI.server.Hubs
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavManager
+@inject AuthService AuthService
