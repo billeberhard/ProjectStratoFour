@@ -20,49 +20,18 @@
                         <span>You are not logged in. Please <a class="fw-bolder" href="/login">click here</a></span>
                     </NotAuthorized>
                     <Authorized>
-                        <span>Logged in as <b>@userName</b><a class="fw-bolder" href="/logout"></a>  </span>
-                        <button @onclick="@(async () => await SendRequest(1))">Verbindungstest Spieler1</button>
-                        <button @onclick="@(async () => await SendRequest(2))">Verbindungstestp Spieler2</button>
+                        <span>Logged in as <b>@context.User.Identity.Name</b> <a class="fw-bolder" href="/logout"></a>  </span>
                         <button @onclick="HandleNewGame">New Game</button>
+                        <button @onclick="HandleSettingsClick">Settings</button>
                     </Authorized>
                 </AuthorizeView>
             </div>
         </div>
     </div>
-
 </div>
 
 
 @code {
-    private string userName;
-
-    protected override async Task OnInitializedAsync()
-    {
-        userName = await AuthService.GetUsernameAsync();
-    }
-
-    private async Task SendRequest(int player)
-    {
-        var factory = new MQTTnet.MqttFactory();
-        var mqttClient = factory.CreateMqttClient();
-
-        var options = new MQTTnet.Client.MqttClientOptionsBuilder()
-            .WithTcpServer("localhost", 1883) // Hier die IP-Adresse und Portnummer des MQTT-Brokers eintragen
-            .Build();
-
-        await mqttClient.ConnectAsync(options);
-        string playerCommand = "4$" + player.ToString();
-        var message = new MQTTnet.MqttApplicationMessageBuilder()
-            .WithTopic("send_from_app/position") // Hier das Topic eintragen, über das der Roboter Nachrichten empfängt
-            .WithPayload(playerCommand)
-            .WithRetainFlag()
-            .Build();
-
-        await mqttClient.PublishAsync(message);
-
-        await mqttClient.DisconnectAsync(null);
-    }
-
     private void HandleNewGame()
     {
         var query = new Dictionary<string, string> {
@@ -71,5 +40,10 @@
 
         NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query));
     }
-}
 
+    private void HandleSettingsClick()
+    {
+        NavManager.NavigateTo("settings");
+    }
+
+}

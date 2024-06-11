@@ -5,6 +5,8 @@ using StratoFour.WebUI.server.Components;
 using Microsoft.AspNetCore.ResponseCompression;
 using StratoFour.WebUI.server.Hubs;
 using StratoFour.Application.UserMatching;
+using StratoFour.Domain;
+using System.ComponentModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +36,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddHostedService<BackGroundWorkerService>();
+builder.Services.AddScoped<BackGroundWorkerService>();
 
 builder.Services.AddScoped<AuthService>();
 

@@ -12,6 +12,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.Infrastructure", "StratoFour.Infrastructure\StratoFour.Infrastructure.csproj", "{97238767-F22C-4CF5-9A9C-0B2E0B188952}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.WebUI.server", "StratoFour.WebUI.server\StratoFour.WebUI.server.csproj", "{AB43E474-8D67-4094-BC85-D56E7D546BE3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5442236D-5C8A-4DEE-A230-81DE8FC394FB} = {5442236D-5C8A-4DEE-A230-81DE8FC394FB}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.Application.Test", "StratoFour.Application.Test\StratoFour.Application.Test.csproj", "{839B78BB-71FC-43F1-82C7-46B0814397D5}"
 EndProject

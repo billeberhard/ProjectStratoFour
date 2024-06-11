@@ -12,6 +12,8 @@
 else
 {
     <GameBoardView Game="@_game"></GameBoardView>
+    <button @onclick="Surrender">Surrender</button>
+    <button @onclick="Rematch">Rematch</button>
 }
 
 @code {
@@ -50,5 +52,14 @@ else
         }
 
         return new Player("Computer", color);
+    }
+    private void Surrender()
+    {
+        navManager.NavigateTo("/");
+    }
+    private void Rematch()
+    {
+        OnInitialized();
+        StateHasChanged();
     }
 }
