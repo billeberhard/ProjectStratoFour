@@ -1,6 +1,5 @@
 ﻿@page "/logout"
 @using Microsoft.AspNetCore.Authentication
-@inject NavigationManager navigationManager
 
 <span class"text-danger fw-bolder">You've successfully logged out of the application'</span>
 
@@ -14,7 +13,7 @@
         if(HttpContext.User.Identity.IsAuthenticated)
         {
             await HttpContext.SignOutAsync();
-            navigationManager.NavigateTo("/logout", true);
+            NavManager.NavigateTo("/logout", true);
         }
 
     }

@@ -22,7 +22,7 @@ namespace StratoFour.Infrastructure.Data
 
         public async Task<GameModel> GetGame(int id)
         {
-            var results = await _db.LoadData<GameModel, dynamic>("dbo.spGame_Get", new { Id = id });
+            var results = await _db.LoadData<GameModel, dynamic>("dbo.spGame_Get", new { GameId = id });
             return results.FirstOrDefault();
         }
 
@@ -41,10 +41,10 @@ namespace StratoFour.Infrastructure.Data
         }
 
         public Task UpdateGame(GameModel game) =>
-            _db.SaveData("dbo.spGame_Update", new { game.SessionId, game.WinnerId, game.IsActive });
+            _db.SaveData("dbo.spGame_Update", new { game.GameId, game.WinnerId, game.IsActive });
 
         public Task DeleteGame(int id) =>
-            _db.SaveData("dbo.spGame_Delete", new { Id = id });
+            _db.SaveData("dbo.spGame_Delete", new { GameId = id });
 
         public async Task<GameModel> GetActivGameSession(int userId)
         {

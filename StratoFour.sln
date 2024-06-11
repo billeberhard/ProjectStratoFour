@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.Infrastructure",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.WebUI.server", "StratoFour.WebUI.server\StratoFour.WebUI.server.csproj", "{AB43E474-8D67-4094-BC85-D56E7D546BE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StratoFour.Application.Test", "StratoFour.Application.Test\StratoFour.Application.Test.csproj", "{839B78BB-71FC-43F1-82C7-46B0814397D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.Application.Test", "StratoFour.Application.Test\StratoFour.Application.Test.csproj", "{839B78BB-71FC-43F1-82C7-46B0814397D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

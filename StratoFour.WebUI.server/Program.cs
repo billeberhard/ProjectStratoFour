@@ -20,6 +20,8 @@ builder.Services.AddTransient<IUserData, UserData>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IGameData, GameData>();
 builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddTransient<IRobotData, RobotData>();
+builder.Services.AddScoped<IRobotService, RobotService>();
 
 //Add Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -35,15 +37,15 @@ builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddScoped<AuthService>();
 
+//Add SignalR
+builder.Services.AddSignalR();
+
 // Add Response Compression
 builder.Services.AddResponseCompression(opts =>
 {
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
           new[] { "application/octet-stream" });
 });
-
-//Add SignalR
-builder.Services.AddSignalR();
 
 //Add HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
@@ -52,6 +54,7 @@ builder.Services.AddLogging();
 
 // Build app
 var app = builder.Build();
+
 
 app.UseResponseCompression();
 

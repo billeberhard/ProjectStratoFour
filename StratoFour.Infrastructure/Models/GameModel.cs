@@ -8,7 +8,7 @@ namespace StratoFour.Infrastructure.Models;
 
 public class GameModel
 {
-    public int SessionId { get; set; }
+    public int GameId { get; set; }
     public int Player1Id { get; set; }
     public int Player2Id { get; set; }
     public int RobotId { get; set; }

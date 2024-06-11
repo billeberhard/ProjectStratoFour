@@ -21,6 +21,7 @@ CREATE TABLE Games (
     StartTime DATETIME NOT NULL,
     GameMode NVARCHAR(50),
     WinnerId INT,
+    IsActive BIT,
     FOREIGN KEY (Player1Id) REFERENCES Users(UserId),
     FOREIGN KEY (Player2Id) REFERENCES Users(UserId),
     FOREIGN KEY (WinnerId) REFERENCES Users(UserId),
