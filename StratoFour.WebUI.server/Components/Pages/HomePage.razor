@@ -41,11 +41,7 @@
 
     private void HandleNewGame()
     {
-        var query = new Dictionary<string, string> {
-            { "name", userName }, { "color",  ColorHelper.GetBluePlanetColor() }
-    };
-
-        NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query));
+        NavManager.NavigateTo("queue");
     }
 
     private void HandleSettingsClick()
