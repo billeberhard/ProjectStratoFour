@@ -20,7 +20,7 @@
                         <span>You are not logged in. Please <a class="fw-bolder" href="/login">click here</a></span>
                     </NotAuthorized>
                     <Authorized>
-                        <span>Logged in as <b>@context.User.Identity.Name</b> <a class="fw-bolder" href="/logout"></a>  </span>
+                        <span>Logged in as <b>@userName</b> <a class="fw-bolder" href="/logout"></a>  </span>
                         <button @onclick="HandleNewGame">New Game</button>
                         <button @onclick="HandleSettingsClick">Settings</button>
                     </Authorized>
@@ -32,6 +32,13 @@
 
 
 @code {
+    private string userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userName = await AuthService.GetUsernameAsync();
+    }
+
     private void HandleNewGame()
     {
         var query = new Dictionary<string, string> {
