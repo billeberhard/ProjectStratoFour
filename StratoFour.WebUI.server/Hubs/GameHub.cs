@@ -122,7 +122,7 @@ namespace StratoFour.WebUI.server.Hubs
                     {
                         try
                         {
-                            await _robotService.UpdateRobotStatus(matchInfo.Robot.RobotId, "In Use");
+                            //await _robotService.UpdateRobotStatus(matchInfo.Robot.RobotId, "In Use");
 
                             var gameId = await _gameService.CreateGameAsync(matchInfo.Player1.UserId, matchInfo.Player2.UserId, matchInfo.Robot.RobotId);
 
@@ -165,6 +165,5 @@ namespace StratoFour.WebUI.server.Hubs
             }
             await Clients.Caller.SendAsync("ChooseGameMode");
         }
-
     }
 }
