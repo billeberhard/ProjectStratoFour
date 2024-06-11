@@ -13,6 +13,7 @@ namespace StratoFour.WebUI.server.Hubs
     public class GameHub : Hub
     {
         private static ConcurrentQueue<int> _playerQueue = new ConcurrentQueue<int>();
+        private static ConcurrentDictionary<int, MatchInfo> _pendingMatches = new ConcurrentDictionary<int, MatchInfo>();
 
         private readonly IUserService _userService;
         private readonly IGameService _gameService;
@@ -70,8 +71,8 @@ namespace StratoFour.WebUI.server.Hubs
         public async Task FindGame(string email)
         {
             var user = await _userService.GetUserByEmailAsync(email);
-            _playerQueue.Enqueue(user.UserId);
 
+            _playerQueue.Enqueue(user.UserId);
             await Clients.Caller.SendAsync("WaitingForOpponent");
 
             if (_playerQueue.Count >= 2)
@@ -81,6 +82,16 @@ namespace StratoFour.WebUI.server.Hubs
                     var player1 = await _userService.GetUserByIdAsync(player1Id);
                     var player2 = await _userService.GetUserByIdAsync(player2Id);
 
+                    var matchInfo = new MatchInfo
+                    {
+                        Player1 = player1,
+                        Player2 = player2,
+                        Robot = await _robotService.GetReadyRobot()
+                    };
+
+                    _pendingMatches.TryAdd(player1Id, matchInfo);
+                    _pendingMatches.TryAdd(player2Id, matchInfo);
+
                     await Clients.Client(player1.ConnectionId).SendAsync("MatchFound", player2);
                     await Clients.Client(player2.ConnectionId).SendAsync("MatchFound", player1);
                 }
@@ -89,46 +100,69 @@ namespace StratoFour.WebUI.server.Hubs
 
         public async Task AcceptMatch(int userId, int otherUserId)
         {
-            RobotModel? readyRobot = null;
-            using(var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            if (_pendingMatches.TryGetValue(userId, out var matchInfo))
             {
-                try
+                if (matchInfo.AcceptedByPlayer1 && matchInfo.AcceptedByPlayer2)
                 {
-                    readyRobot = await _robotService.GetReadyRobot();
-                    if (readyRobot == null)
-                    {
-                        throw new HubException("No ready robot available.");
-                    }
-
-                    var sessionId = await _gameService.CreateGameAsync(userId, otherUserId, readyRobot.RobotId);
-                    await _robotService.UpdateRobotStatus(readyRobot.RobotId, "In Use");
-
-                    var player1 = await _userService.GetUserByIdAsync(userId);
-                    var player2 = await _userService.GetUserByIdAsync(otherUserId);
-
-                    await Clients.Client(player1.ConnectionId).SendAsync("StartGame", sessionId, "Player1");
-                    await Clients.Client(player2.ConnectionId).SendAsync("StartGame", sessionId, "Player2");
-
-                    scope.Complete();
+                    throw new HubException("Match already accepted by both players.");
                 }
-                catch (Exception ex)
+
+                if (matchInfo.Player1.UserId == userId)
                 {
-                    _logger.LogError(ex, "Error in AcceptMatch");
-
-                    // Rollback: Set the robot status back to "Ready"
-                    if (readyRobot != null)
-                    {
-                        await _robotService.UpdateRobotStatus(readyRobot.RobotId, "Ready");
-                    }
-
-                    throw new HubException("An error occurred while accepting the match.", ex);
-
+                    matchInfo.AcceptedByPlayer1 = true;
                 }
+                else if (matchInfo.Player2.UserId == userId)
+                {
+                    matchInfo.AcceptedByPlayer2 = true;
+                }
+
+                if (matchInfo.AcceptedByPlayer1 && matchInfo.AcceptedByPlayer2)
+                {
+                    using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                    {
+                        try
+                        {
+                            await _robotService.UpdateRobotStatus(matchInfo.Robot.RobotId, "In Use");
+
+                            var gameId = await _gameService.CreateGameAsync(matchInfo.Player1.UserId, matchInfo.Player2.UserId, matchInfo.Robot.RobotId);
+
+                            await Clients.Client(matchInfo.Player1.ConnectionId).SendAsync("StartGame", gameId, "Player1");
+                            await Clients.Client(matchInfo.Player2.ConnectionId).SendAsync("StartGame", gameId, "Player2");
+
+                            scope.Complete();
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Error in AcceptMatch");
+                            await _robotService.UpdateRobotStatus(matchInfo.Robot.RobotId, "Ready");
+                            throw new HubException("An error occurred while accepting the match.", ex);
+                        }
+                        finally
+                        {
+                            _pendingMatches.TryRemove(matchInfo.Player1.UserId, out _);
+                            _pendingMatches.TryRemove(matchInfo.Player2.UserId, out _);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new HubException("No pending match found for this user.");
             }
         }
 
         public async Task DeclineMatch(int userId)
         {
+            if(_pendingMatches.TryGetValue(userId, out var matchInfo))
+            {
+                await Clients.Client(matchInfo.Player1.ConnectionId).SendAsync("MatchDeclined");
+                await Clients.Client(matchInfo.Player2.ConnectionId).SendAsync("MatchDeclined");
+
+                await _robotService.UpdateRobotStatus(matchInfo.Robot.RobotId, "Ready");
+
+                _pendingMatches.TryRemove(matchInfo.Player1.UserId, out _);
+                _pendingMatches.TryRemove(matchInfo.Player2.UserId, out _);
+            }
             await Clients.Caller.SendAsync("ChooseGameMode");
         }
 
