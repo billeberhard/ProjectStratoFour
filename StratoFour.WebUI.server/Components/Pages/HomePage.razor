@@ -6,11 +6,10 @@
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3>HomePage</h3>
-
 <div class="row">
-    <div class="col-12">
+    <div class="col-12 d-flex justify-content-between align-items-center">
         <h2 class="fw-bolder">Welcome to <span class="text-danger">StratoFour</span></h2>
+        <button class="btn btn-secondary" @onclick="HandleSettingsClick">Settings</button>
     </div>
     <div class="col-12">
         <div class="card">
@@ -21,8 +20,21 @@
                     </NotAuthorized>
                     <Authorized>
                         <span>Logged in as <b>@userName</b> <a class="fw-bolder" href="/logout"></a>  </span>
-                        <button @onclick="HandleNewGame">New Game</button>
-                        <button @onclick="HandleSettingsClick">Settings</button>
+                        <div class="mt-3">
+                            <label>
+                                <input type="radio" name="gameType" value="singleplayer" @onchange="OnGameTypeChanged" checked="@((selectedGameType == "singleplayer").ToString())">
+                                Singleplayer
+                            </label>
+                            <label class="ms-3">
+                                <input type="radio" name="gameType" value="multiplayer" @onchange="OnGameTypeChanged" checked="@((selectedGameType == "multiplayer").ToString())">
+                                Multiplayer
+                            </label>
+                            <label class="ms-3">
+                                <input type="radio" name="gameType" value="botvsbot" @onchange="OnGameTypeChanged" checked="@((selectedGameType == "botmultiplayer").ToString())">
+                                Let Bot play
+                            </label>
+                        </div>
+                        <button class="btn btn-primary btn-lg mt-3" style="width: 30%;" @onclick="HandleNewGame">New Game</button>
                     </Authorized>
                 </AuthorizeView>
             </div>
@@ -32,6 +44,7 @@
 
 
 @code {
+    private string selectedGameType = "singleplayer";
     private string userName;
 
     protected override async Task OnInitializedAsync()
@@ -41,12 +54,18 @@
 
     private void HandleNewGame()
     {
+        //do multipllayer stuff
         NavManager.NavigateTo("queue");
     }
 
     private void HandleSettingsClick()
     {
         NavManager.NavigateTo("settings");
+    }
+
+    private void OnGameTypeChanged(ChangeEventArgs e)
+    {
+        selectedGameType = e.Value.ToString();
     }
 
 }

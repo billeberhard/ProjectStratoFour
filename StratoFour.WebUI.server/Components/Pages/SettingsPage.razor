@@ -4,25 +4,34 @@
 @inject NavigationManager NavManager
 @inject BackGroundWorkerService WorkerService
 @rendermode InteractiveServer
-<h3>Change Password</h3>
 
-<div class="form-grid">
-    <label for="currentPassword">Current Password</label>
-    <input type="password" id="currentPassword" @bind="currentPassword" />
-
-    <label for="newPassword">New Password</label>
-    <input type="password" id="newPassword" @bind="newPassword" />
-
-    <label for="confirmPassword">Confirm New Password</label>
-    <input type="password" id="confirmPassword" @bind="confirmPassword" />
-
-    <div class="button-container">
-        <button @onclick="Save">Save</button>
-        <button @onclick="Cancel">Cancel</button>
-    </div>
-    <div>
-        <button @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(1, 1))">Verbindungstest Spieler1</button>
-        <button @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(2, 2))">Verbindungstest Spieler2</button>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="form-grid">
+                <div><h3>Change Password</h3></div>
+                <div class="mb-3">
+                    <label for="currentPassword" class="form-label">Current Password</label>
+                    <input type="password" id="currentPassword" class="form-control" @bind="currentPassword" />
+                </div>
+                <div class="mb-3">
+                    <label for="newPassword" class="form-label">New Password</label>
+                    <input type="password" id="newPassword" class="form-control" @bind="newPassword" />
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-control" @bind="confirmPassword" />
+                </div>
+                <div class="button-container mb-3">
+                    <button class="btn btn-primary me-2" @onclick="Save">Save</button>
+                    <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+                </div>
+                <div class="mb-3 text-center">
+                    <button class="btn btn-outline-primary me-2" @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(1, 1))">Verbindungstest Spieler1</button>
+                    <button class="btn btn-outline-secondary" @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(2, 2))">Verbindungstest Spieler2</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
