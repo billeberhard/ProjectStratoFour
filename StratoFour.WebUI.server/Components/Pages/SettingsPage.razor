@@ -1,57 +1,81 @@
 ﻿@page "/settings"
 
+@using StratoFour.Application.ViewModels
 @using StratoFour.Domain
-@inject NavigationManager NavManager
 @inject BackGroundWorkerService WorkerService
+@inject IUserService UserService
 @rendermode InteractiveServer
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="form-grid">
-                <div><h3>Change Password</h3></div>
-                <div class="mb-3">
-                    <label for="currentPassword" class="form-label">Current Password</label>
-                    <input type="password" id="currentPassword" class="form-control" @bind="currentPassword" />
-                </div>
-                <div class="mb-3">
-                    <label for="newPassword" class="form-label">New Password</label>
-                    <input type="password" id="newPassword" class="form-control" @bind="newPassword" />
-                </div>
-                <div class="mb-3">
-                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                    <input type="password" id="confirmPassword" class="form-control" @bind="confirmPassword" />
-                </div>
-                <div class="button-container mb-3">
-                    <button class="btn btn-primary me-2" @onclick="Save">Save</button>
-                    <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
-                </div>
-                <div class="mb-3 text-center">
-                    <button class="btn btn-outline-primary me-2" @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(1, 1))">Verbindungstest Spieler1</button>
-                    <button class="btn btn-outline-secondary" @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(2, 2))">Verbindungstest Spieler2</button>
+<EditForm Model="@Model" OnInvalidSubmit="Save">
+    <DataAnnotationsValidator/>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="form-grid">
+                        <div><h3>Change Password</h3></div>
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <input type="password" id="currentPassword" class="form-control" @bind=Model.OldPassword/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" id="newPassword" class="form-control" @bind=Model.Password />
+                        <ValidationMessage For="() => Model.Password" class="text-danger" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" class="form-control" @bind=Model.ConfirmPassword />
+                        <ValidationMessage For="() => Model.ConfirmPassword" class="text-danger" />
+                        </div>
+                        @if(ShowSuccessMessage)
+                        {
+                            <div class="alert alert-success" role="alert">
+                                Password changed successfully.
+                            </div>
+                        }
+                        @if (ShowErrorMessage)
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                Old password is incorrect.
+                            </div>
+                        }
+                        <div class="button-container mb-3">
+                            <button class="btn btn-primary me-2" @onclick="Save">Save</button>
+                            <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <button class="btn btn-outline-primary me-2" @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(1, 1))">Verbindungstest Spieler1</button>
+                            <button class="btn btn-outline-secondary" @onclick="@(async () => await WorkerService.SendPlayerTurnRequestAsync(2, 2))">Verbindungstest Spieler2</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+</EditForm>
 
 @code {
-    private string currentPassword;
-    private string newPassword;
-    private string confirmPassword;
+    public SettingsViewModel Model { get; set; } = new();
+    private bool ShowSuccessMessage { get; set; } = false;
+    private bool ShowErrorMessage { get; set; } = false;
 
     private async Task Save()
     {
-        if (newPassword == confirmPassword)
-        {
-           //DB Update table
+        var email = await AuthService.GetEmailAsync();
+        var user = await UserService.GetUserByEmailAsync(email);
 
+        if (user.PasswordHash == Model.OldPassword)
+        {
+            ShowErrorMessage = false;
+            user.PasswordHash = Model.Password;
+
+            await UserService.UpdateUserAsync(user);
+            // ShowSuccessMessage = true;
             NavManager.NavigateTo("/");
         }
         else
         {
             // Fehler anzeigen
-            Console.WriteLine("Passwords do not match!");
+            ShowErrorMessage = true; 
         }
     }
 
