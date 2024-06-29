@@ -5,6 +5,8 @@ using StratoFour.Application.Board;
 using StratoFour.Application.GameStrategies;
 using StratoFour.Application;
 using StratoFour.Domain;
+using System.Windows;
+using System.Media;
 
 namespace StratoFour.Application
 {
@@ -66,6 +68,8 @@ namespace StratoFour.Application
             {
                 playerNumber = 2;
             }
+            SoundPlayer sound = new SoundPlayer("playerturn_wood.amv");
+            sound.PlaySync();
             _backgroundWorkerService.SendPlayerTurnRequestAsync(playerNumber, column + 1);
 
             CheckGameStatus(column, droppedRow);
