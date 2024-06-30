@@ -68,10 +68,11 @@ namespace StratoFour.Application
             {
                 playerNumber = 2;
             }
-            SoundPlayer sound = new SoundPlayer("playerturn_wood.amv");
+            string soundFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "sounds", "playerturn_wood.wav");
+            SoundPlayer sound = new SoundPlayer(soundFilePath);
             sound.PlaySync();
-            _backgroundWorkerService.SendPlayerTurnRequestAsync(playerNumber, column + 1);
 
+            _backgroundWorkerService.SendPlayerTurnRequestAsync(playerNumber, column + 1);
             CheckGameStatus(column, droppedRow);
             if (_isOver)
             {
