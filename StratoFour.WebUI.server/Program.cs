@@ -39,7 +39,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddHostedService<BackGroundWorkerService>();
-builder.Services.AddScoped<BackGroundWorkerService>();
+builder.Services.AddSingleton<BackGroundWorkerService>();
 
 builder.Services.AddHttpClient();
 
