@@ -4,23 +4,22 @@ using System.Text;
 using StratoFour.Application.Board;
 using StratoFour.Application.GameStrategies;
 using StratoFour.Application;
+using StratoFour.Domain;
+using System.Windows;
+using System.Media;
 
 namespace StratoFour.Application
 {
     public class Game : IGame
     {
         private bool _isOver;
-
         private Player _currentPlayer;
-
         private readonly Player _playerOne;
         private readonly Player _playerTwo;
-
         private Player _winner;
-
         private readonly IGameMode _strategy;
-
         private readonly IGameBoard _board;
+        private readonly BackGroundWorkerService _backgroundWorkerService;
 
         public Game(Player playerOne, Player playerTwo, GameModeLevel level)
         {
@@ -30,6 +29,7 @@ namespace StratoFour.Application
 
             _board = new GameBoard();
             _strategy = GameModeFactory.Create(level, _board);
+            _backgroundWorkerService = new BackGroundWorkerService(new Microsoft.Extensions.Logging.Abstractions.NullLogger<BackGroundWorkerService>());
         }
 
         public IGameBoard GetBoard()
@@ -63,6 +63,14 @@ namespace StratoFour.Application
             {
                 return;
             }
+            var playerNumber = 1;
+            if(_currentPlayer == _playerTwo)
+            {
+                playerNumber = 2;
+            }
+            SoundPlayer sound = new SoundPlayer("playerturn_wood.amv");
+            sound.PlaySync();
+            _backgroundWorkerService.SendPlayerTurnRequestAsync(playerNumber, column + 1);
 
             CheckGameStatus(column, droppedRow);
             if (_isOver)

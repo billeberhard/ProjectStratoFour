@@ -8,9 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.6" />
+    <PackageReference Include="System.Windows.Extensions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StratoFour.Domain\StratoFour.Domain.csproj" />
     <ProjectReference Include="..\StratoFour.Infrastructure\StratoFour.Infrastructure.csproj" />
   </ItemGroup>
 
