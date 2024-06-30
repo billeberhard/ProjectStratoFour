@@ -15,14 +15,12 @@ namespace StratoFour.Application
 
         private readonly Player _playerOne;
         private readonly Player _playerTwo;
-
         private Player _winner;
-
         private readonly IGameMode _strategy;
-
         private readonly IGameBoard _board;
+        private readonly Action<int> _onMove;
 
-        public Game(Player playerOne, Player playerTwo, GameModeLevel level)
+        public Game(Player playerOne, Player playerTwo, GameModeLevel level, Action<int> onMove = null)
         {
             _playerOne = playerOne;
             _playerTwo = playerTwo;
@@ -30,6 +28,12 @@ namespace StratoFour.Application
 
             _board = new GameBoard();
             _strategy = GameModeFactory.Create(level, _board);
+            _onMove = onMove;
+        }
+
+        public GameModeLevel GetGameModeLevel()
+        {
+            return _strategy.GetLevel();
         }
 
         public IGameBoard GetBoard()
@@ -69,6 +73,8 @@ namespace StratoFour.Application
             {
                 return;
             }
+            
+            _onMove?.Invoke(column);
 
             SwitchPlayer();
 

@@ -40,7 +40,7 @@ namespace StratoFour.Application.UserMatching
             return await _gameData.GetActivGameSession(userId);
         }
 
-        public async Task<GameModel> GetGameAsync(int id)
+        public async Task<GameModel> GetGameByIdAsync(int id)
         {
             return await _gameData.GetGame(id);
         }
@@ -48,6 +48,11 @@ namespace StratoFour.Application.UserMatching
         public async Task UpdateGameAsync(GameModel game)
         {
             await _gameData.UpdateGame(game);
+        }
+
+        public void ConfirmGame(int gameId)
+        {
+            
         }
     }
 }

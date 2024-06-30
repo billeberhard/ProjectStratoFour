@@ -11,7 +11,8 @@ public interface IGameService
 {
     Task<int> CreateGameAsync(int player1Id, int player2Id, int robotId);
     Task<GameModel> GetActiveGameSessionAsync(int userId);
-    Task<GameModel> GetGameAsync(int id);
+    Task<GameModel> GetGameByIdAsync(int id);
     Task UpdateGameAsync(GameModel game);
     Task DeleteGameAsync(int id);
+    void ConfirmGame(int gameId);
 }

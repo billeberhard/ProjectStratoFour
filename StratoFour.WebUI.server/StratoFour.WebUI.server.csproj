@@ -23,6 +23,7 @@
     <ProjectReference Include="..\StratoFour.Application\StratoFour.Application.csproj" />
     <ProjectReference Include="..\StratoFour.Domain\StratoFour.Domain.csproj" />
     <ProjectReference Include="..\StratoFour.Infrastructure\StratoFour.Infrastructure.csproj" />
+    <ProjectReference Include="..\StratoFour.RestApi\StratoFour.RestApi.csproj" />
   </ItemGroup>
 
 </Project>

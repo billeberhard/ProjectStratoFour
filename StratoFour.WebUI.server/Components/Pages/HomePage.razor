@@ -22,15 +22,15 @@
                         <span>Logged in as <b>@userName</b> <a class="fw-bolder" href="/logout"></a>  </span>
                         <div class="mt-3">
                             <label>
-                                <input type="radio" name="gameType" value="singleplayer" @onchange="OnGameTypeChanged" checked="@((selectedGameType == "singleplayer").ToString())">
+                                <input type="radio" name="gameType" value="singleplayer" checked="@((selectedGameType == "singleplayer"))" @onchange="OnGameTypeChanged">
                                 Singleplayer
                             </label>
                             <label class="ms-3">
-                                <input type="radio" name="gameType" value="multiplayer" @onchange="OnGameTypeChanged" checked="@((selectedGameType == "multiplayer").ToString())">
+                                <input type="radio" name="gameType" value="multiplayer" checked="@((selectedGameType == "multiplayer"))" @onchange="OnGameTypeChanged">
                                 Multiplayer
                             </label>
                             <label class="ms-3">
-                                <input type="radio" name="gameType" value="botvsbot" @onchange="OnGameTypeChanged" checked="@((selectedGameType == "botmultiplayer").ToString())">
+                                <input type="radio" name="gameType" value="botplayer" checked="@((selectedGameType == "botplayer"))" @onchange="OnGameTypeChanged">
                                 Let Bot play
                             </label>
                         </div>
@@ -54,8 +54,27 @@
 
     private void HandleNewGame()
     {
-        //do multipllayer stuff
-        NavManager.NavigateTo("queue");
+        switch(selectedGameType)
+        {
+            case "multiplayer":
+                NavManager.NavigateTo("queue");
+                break; 
+            case "singleplayer":
+                var query = new Dictionary<string, string>
+                {
+                    {"name", userName }, {"color", ColorHelper.GetBluePlanetColor()}, {"level", "singleplayer"}
+                };
+                NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query));
+                break;
+            case "botplayer":
+                var query2 = new Dictionary<string, string>
+                {
+                    {"name", "Stratofour Bot" }, {"color", ColorHelper.GetBluePlanetColor()}, {"level", "botvsbot"}
+                };
+                NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query2));
+                break;
+
+        }
     }
 
     private void HandleSettingsClick()
@@ -67,5 +86,4 @@
     {
         selectedGameType = e.Value.ToString();
     }
-
 }

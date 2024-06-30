@@ -1,9 +1,16 @@
 ﻿@using StratoFour.Application;
+@using StratoFour.Application.GameStrategies
+@inject HttpClient Http
 
 <div class="container">
     <div class="row">
         Current Player: <strong>@Game.GetCurrentPlayer().Name</strong>
     </div>
+
+    @if (_level == GameModeLevel.ApiPlayer && _gameStarted == false)
+    {
+        <button class="btn btn-primary btn-lg mt-3" style="width: 30%;" @onclick="StartGame">Start Game</button>
+    }
     @if (Game.IsOver())
     {
         <div class="row">
@@ -43,6 +50,8 @@
     </div>
 </div>
 
+
+
 <style>
     .game-board-container {
         width: 700px;
@@ -50,14 +59,54 @@
 </style>
 
 @code {
+
     [Parameter]
     public IGame Game { get; set; }
+    private int gameId; 
+    private GameModeLevel _level; 
+    private bool _gameStarted;
 
     private int highlightedColumn = -1;
 
+    protected override async Task OnInitializedAsync()
+    {
+        _level = Game.GetGameModeLevel();
+    }
+
     private void HandleClick(int column)
     {
-        Game.DropDisc(column);
+        if(_level != GameModeLevel.ApiPlayer)
+        {
+            Game.DropDisc(column);
+        }
+    }
+
+    private async Task StartGame()
+    {
+        _gameStarted = true;
+        StateHasChanged();
+        while (!Game.IsOver())
+        {
+            if (Game.GetCurrentPlayer().Name == "Api")
+            {
+                var column = await GetApiMoveAsync();
+                Game.DropDisc(column);
+                StateHasChanged();
+                await Task.Delay(500);
+            }
+        }
+        StateHasChanged();
+    }
+
+    private async Task<int> GetApiMoveAsync()
+    {
+        // gameId = 99999;
+        // var response = await Http.GetAsync($"api/gamemove/nextmove?gameId={gameId}");
+        // response.EnsureSuccessStatusCode();
+        // var column = await response.Content.ReadFromJsonAsync<int>();
+        var random = new Random();
+        var column = random.Next(0, 7);
+        return column;
     }
 
     private void HandleMouseOver(int column)

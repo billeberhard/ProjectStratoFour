@@ -16,6 +16,7 @@ public class GameModel
     public string GameMode {  get; set; }
     public int? WinnerId { get; set; }
     public bool IsActive { get; set; }
+    public TimeSpan GameTime { get; set; }
 
 
     public UserModel Player1 { get; set; } 

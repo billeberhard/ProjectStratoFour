@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddControllers(); 
 
 //Add SQL Data Access
 builder.Services.AddTransient<ISqlDataAccess, SqlDataAccess>();
@@ -36,10 +37,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<AuthService>();
+
 builder.Services.AddHostedService<BackGroundWorkerService>();
 builder.Services.AddScoped<BackGroundWorkerService>();
 
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddHttpClient();
 
 //Add SignalR
 builder.Services.AddSignalR();
@@ -75,7 +78,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 app.UseAuthentication();
-//app.UseAuthorization();
 
 //Map Razor Compontnts
 app.MapRazorComponents<App>()

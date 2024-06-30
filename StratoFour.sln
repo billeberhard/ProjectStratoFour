@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.WebUI.server", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StratoFour.Application.Test", "StratoFour.Application.Test\StratoFour.Application.Test.csproj", "{839B78BB-71FC-43F1-82C7-46B0814397D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StratoFour.RestApi", "StratoFour.RestApi\StratoFour.RestApi.csproj", "{1412D239-A7DA-4B4A-B8E9-8C84F7063B80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{839B78BB-71FC-43F1-82C7-46B0814397D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{839B78BB-71FC-43F1-82C7-46B0814397D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{839B78BB-71FC-43F1-82C7-46B0814397D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1412D239-A7DA-4B4A-B8E9-8C84F7063B80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1412D239-A7DA-4B4A-B8E9-8C84F7063B80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1412D239-A7DA-4B4A-B8E9-8C84F7063B80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1412D239-A7DA-4B4A-B8E9-8C84F7063B80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 		{97238767-F22C-4CF5-9A9C-0B2E0B188952} = {3F90F8D3-8AB3-4B86-9B27-435668EB1F59}
 		{AB43E474-8D67-4094-BC85-D56E7D546BE3} = {3F90F8D3-8AB3-4B86-9B27-435668EB1F59}
 		{839B78BB-71FC-43F1-82C7-46B0814397D5} = {3F90F8D3-8AB3-4B86-9B27-435668EB1F59}
+		{1412D239-A7DA-4B4A-B8E9-8C84F7063B80} = {3F90F8D3-8AB3-4B86-9B27-435668EB1F59}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {543480F3-866C-41B6-8FF0-8AD5076AA262}
