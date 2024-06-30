@@ -21,14 +21,36 @@ else
 
     protected override void OnInitialized()
     {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        var parsedQuery = QueryHelpers.ParseQuery(uri.Query);
+        var gameModeLevel = GameModeLevel.Easy;
+
         // Currently, only easy level is supported for playing against computer.
         // To support more levels, extend the form and logic.
-        var level = GameModeLevel.Easy;
+        var level = parsedQuery.GetValueOrDefault("level", "singleplayer");
+        var playerOne = new Player("", "");
+        var playerTwo = new Player("", "");
 
-        var playerOne = CreateMainPlayerFromUri();
-        var playerTwo = CreateComputerPlayer(playerOne.Color);
+        switch (level)
+        {
+            case "singleplayer":
+                gameModeLevel = GameModeLevel.Easy;
+                playerOne = CreateMainPlayerFromUri();
+                playerTwo = CreateComputerPlayer(playerOne.Color);
+                break;
 
-        _game = new Game(playerOne, playerTwo, level);
+            case "botvsbot":
+                gameModeLevel = GameModeLevel.ApiPlayer;
+                playerOne = CreateApiPlayer();
+                playerTwo = CreateComputerPlayer(playerOne.Color);
+                break;
+            case "multiplayer":
+                gameModeLevel = GameModeLevel.MultiPlayer;
+                playerOne = CreateMainPlayerFromUri();
+                break;
+        }
+
+        _game = new Game(playerOne, playerTwo, gameModeLevel);
     }
 
     private Player CreateMainPlayerFromUri()
@@ -40,6 +62,13 @@ else
         string color = parsedQuery.GetValueOrDefault("color", "#1DAC46");
 
         return new Player(name, color);
+    }
+
+    private Player CreateApiPlayer()
+    {
+        string color = ColorHelper.GetBluePlanetColor();
+
+        return new Player("Api", color);
     }
 
     private Player CreateComputerPlayer(string mainPlayerColor)

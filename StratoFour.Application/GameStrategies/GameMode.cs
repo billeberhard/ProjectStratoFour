@@ -14,6 +14,7 @@ namespace StratoFour.Application.GameStrategies
             return level switch
             {
                 GameModeLevel.Easy => new EasyLevelStrategy(board),
+                GameModeLevel.ApiPlayer => new ApiStrategy(board),
                 _ => throw new NotSupportedException($"Strategy {level} is not supported yet")
             };
         }

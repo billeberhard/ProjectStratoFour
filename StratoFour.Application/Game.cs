@@ -20,8 +20,9 @@ namespace StratoFour.Application
         private readonly IGameMode _strategy;
         private readonly IGameBoard _board;
         private readonly BackGroundWorkerService _backgroundWorkerService;
+        private readonly Action<int> _onMove;
 
-        public Game(Player playerOne, Player playerTwo, GameModeLevel level)
+        public Game(Player playerOne, Player playerTwo, GameModeLevel level, Action<int> onMove = null)
         {
             _playerOne = playerOne;
             _playerTwo = playerTwo;
@@ -30,6 +31,12 @@ namespace StratoFour.Application
             _board = new GameBoard();
             _strategy = GameModeFactory.Create(level, _board);
             _backgroundWorkerService = new BackGroundWorkerService(new Microsoft.Extensions.Logging.Abstractions.NullLogger<BackGroundWorkerService>());
+            _onMove = onMove;
+        }
+
+        public GameModeLevel GetGameModeLevel()
+        {
+            return _strategy.GetLevel();
         }
 
         public IGameBoard GetBoard()
@@ -77,6 +84,8 @@ namespace StratoFour.Application
             {
                 return;
             }
+
+            _onMove?.Invoke(column);
 
             SwitchPlayer();
 
