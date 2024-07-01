@@ -14,12 +14,14 @@ namespace StratoFour.Domain
     {
         private readonly ILogger<BackGroundWorkerService> _logger;
         private readonly IMqttClient _mqttClient;
+        private readonly MessageService _messageService; 
 
-        public BackGroundWorkerService(ILogger<BackGroundWorkerService> logger)
+        public BackGroundWorkerService(ILogger<BackGroundWorkerService> logger, MessageService messageService)
         {
             _logger = logger;
             var factory = new MqttFactory();
             _mqttClient = factory.CreateMqttClient();
+            _messageService = messageService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,6 +37,7 @@ namespace StratoFour.Domain
                 {
                     string message = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
                     _logger.LogInformation($"Received message on topic '{e.ApplicationMessage.Topic}': {message}");
+                    _messageService.Publish(message);
                 }
             });
 

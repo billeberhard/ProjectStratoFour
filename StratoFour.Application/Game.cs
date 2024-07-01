@@ -26,8 +26,9 @@ namespace StratoFour.Application
         private readonly BackGroundWorkerService _mqttService;
         private readonly Action<int> _onMove;
         private readonly Action<bool> _lockGameUi;
+        private readonly MessageService _messageService;
 
-        public Game(Player playerOne, Player playerTwo, GameModeLevel level,  Action<int> onMove = null, Action<bool> lockGameUi = null)
+        public Game(Player playerOne, Player playerTwo, GameModeLevel level, MessageService messageService, Action<int> onMove = null, Action<bool> lockGameUi = null)
         {
             _playerOne = playerOne;
             _playerTwo = playerTwo;
@@ -35,9 +36,22 @@ namespace StratoFour.Application
 
             _board = new GameBoard();
             _strategy = GameModeFactory.Create(level, _board);
-            //_mqttService = mqttService;
+            
             _onMove = onMove;
             _lockGameUi = lockGameUi;
+            _messageService = messageService;
+            SubscribeToMessages();
+        }
+        public bool IsTurnFinished { get; set; }
+
+        private void SubscribeToMessages()
+        {
+            _messageService.MessageStream.Subscribe(message =>
+            {
+                // Handle the received message here
+                Console.WriteLine($"Game received message: {message}");
+                IsTurnFinished = true;
+            });
         }
 
         public GameModeLevel GetGameModeLevel()
@@ -88,6 +102,12 @@ namespace StratoFour.Application
             // =================================================== Hack zone ==============================================
             var mqttCol = column + 1;
             await SendMqttMessageAsync("1$" + mqttCol);
+            while (IsTurnFinished = false)
+            {
+                Thread.Sleep(100);
+            }
+            IsTurnFinished = false;
+
 
             //=======================================================================================================================
             //await _mqttService.SendPlayerTurnAsync(playerNumber, column + 1);
@@ -108,7 +128,11 @@ namespace StratoFour.Application
                 // =================================================== Hack zone ==============================================
                 var mqttBotCol = playedColumn + 1;
                 await SendMqttMessageAsync("2$" + mqttBotCol);
-
+                while (IsTurnFinished = false)
+                {
+                    Thread.Sleep(100);
+                }
+                IsTurnFinished = false;
                 //=======================================================================================================================
                 CheckGameStatus(playedColumn, playedRow);
 
