@@ -18,7 +18,7 @@ namespace StratoFour.Application.GameStrategies
 
         public GameModeLevel GetLevel() => GameModeLevel.MultiPlayer; 
 
-        public (int column, int row) Play(Player currentPlayer, Player opponentPlayer)
+        public (int, int) Play(Player currentPlayer, Player opponentPlayer)
         {
 
             return (0, 0); 

@@ -59,7 +59,7 @@ else
 
             hubConnection.On<IGameBoard>("YourTurn", (board) =>
             {
-                _game.GetBoard().CopyFrom(board);
+                // _game.GetBoard().CopyFrom(board);
                 isMyTurn = true;
                 statusMessage = "Your turn!";
                 StateHasChanged();
@@ -67,7 +67,7 @@ else
 
             hubConnection.On<IGameBoard>("OpponentTurn", (board) =>
             {
-                _game.GetBoard().CopyFrom(board);
+                // _game.GetBoard().CopyFrom(board);
                 isMyTurn = false;
                 statusMessage = "Opponent's turn.";
                 StateHasChanged();
@@ -75,13 +75,13 @@ else
 
             hubConnection.On<IGameBoard>("UpdateBoard", (board) =>
             {
-                _game.GetBoard().CopyFrom(board);
+                // _game.GetBoard().CopyFrom(board);
                 StateHasChanged();
             });
 
             hubConnection.On<Player>("NextTurn", (currentPlayer) =>
             {
-                isMyTurn = currentPlayer.Email == email;
+                // isMyTurn = currentPlayer.Email == email;
                 statusMessage = isMyTurn ? "Your turn!" : "Opponent's turn.";
                 StateHasChanged();
             });
