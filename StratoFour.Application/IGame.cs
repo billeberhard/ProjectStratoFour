@@ -6,6 +6,7 @@ namespace StratoFour.Application
 {
     public interface IGame
     {
+        //void SubscribeToMessages(); 
         GameModeLevel GetGameModeLevel();
         IGameBoard GetBoard();
         Player GetCurrentPlayer();

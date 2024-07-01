@@ -39,6 +39,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddHostedService<BackGroundWorkerService>();
+builder.Services.AddSingleton<MessageService>();
 
 builder.Services.AddHttpClient();
 

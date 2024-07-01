@@ -26,8 +26,9 @@ namespace StratoFour.Application
         private readonly BackGroundWorkerService _mqttService;
         private readonly Action<int> _onMove;
         private readonly Action<bool> _lockGameUi;
+        private readonly MessageService _messageService;
 
-        public Game(Player playerOne, Player playerTwo, GameModeLevel level,  Action<int> onMove = null, Action<bool> lockGameUi = null)
+        public Game(Player playerOne, Player playerTwo, GameModeLevel level,  Action<int> onMove = null, Action<bool> lockGameUi = null, MessageService messageService)
         {
             _playerOne = playerOne;
             _playerTwo = playerTwo;
@@ -38,6 +39,16 @@ namespace StratoFour.Application
             //_mqttService = mqttService;
             _onMove = onMove;
             _lockGameUi = lockGameUi;
+            _messageService = messageService;
+        }
+
+        private void SubscribeToMessages()
+        {
+            _messageService.MessageStream.Subscribe(message =>
+            {
+                // Handle the received message here
+                Console.WriteLine($"Game received message: {message}");
+            });
         }
 
         public GameModeLevel GetGameModeLevel()
