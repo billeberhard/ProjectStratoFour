@@ -9,6 +9,7 @@ using System.Windows;
 using System.Media;
 using MQTTnet.Client;
 using System.Numerics;
+using MQTTnet.Client.Options;
 
 
 namespace StratoFour.Application
@@ -87,6 +88,7 @@ namespace StratoFour.Application
             // =================================================== Hack zone ==============================================
             var mqttCol = column + 1;
             await SendMqttMessageAsync("1$" + mqttCol);
+
             //=======================================================================================================================
             //await _mqttService.SendPlayerTurnAsync(playerNumber, column + 1);
             CheckGameStatus(column, droppedRow);
@@ -147,7 +149,7 @@ namespace StratoFour.Application
         {
             var factory = new MQTTnet.MqttFactory();
             var mqttClient = factory.CreateMqttClient();
-            var options = new MQTTnet.Client.MqttClientOptionsBuilder()
+            var options = new MqttClientOptionsBuilder()
                 .WithTcpServer("localhost", 1883)
                 .Build();
 

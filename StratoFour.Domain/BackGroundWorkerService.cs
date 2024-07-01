@@ -6,49 +6,68 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Client.Internal;
+using MQTTnet.Client.Options;
 
-namespace StratoFour.Domain;
-public class BackGroundWorkerService : BackgroundService
+namespace StratoFour.Domain
 {
-    private readonly ILogger<BackGroundWorkerService> _logger;
-    private readonly MqttService _mqttService;
-
-    public BackGroundWorkerService(ILogger<BackGroundWorkerService> logger, MqttService mqttService)
+    public class BackGroundWorkerService : BackgroundService
     {
-        _logger = logger;
+        private readonly ILogger<BackGroundWorkerService> _logger;
+        private readonly IMqttClient _mqttClient;
 
-        var factory = new MqttFactory();
-        _mqttService = mqttService;
-    }
-
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        while (!stoppingToken.IsCancellationRequested)
+        public BackGroundWorkerService(ILogger<BackGroundWorkerService> logger)
         {
+            _logger = logger;
+            var factory = new MqttFactory();
+            _mqttClient = factory.CreateMqttClient();
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            var options = new MqttClientOptionsBuilder()
+                .WithTcpServer("localhost", 1883) // MQTT Broker Adresse und Port
+                .Build();
+
+            // Event-Handler für empfangene MQTT-Nachrichten setzen
+            _mqttClient.UseApplicationMessageReceivedHandler(e =>
+            {
+                if (e.ApplicationMessage.Topic == "send_from_arduino/positioned")
+                {
+                    string message = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+                    _logger.LogInformation($"Received message on topic '{e.ApplicationMessage.Topic}': {message}");
+                }
+            });
+
             try
             {
-                await _mqttService.ConnectAsync(stoppingToken);
+                await _mqttClient.ConnectAsync(options, stoppingToken);
+                _logger.LogInformation("Connected to MQTT broker.");
+
+                // Thema abonnieren
+                await _mqttClient.SubscribeAsync("send_from_arduino/positioned");
 
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                    // Hier kann Ihre spezifische Logik implementiert werden
+                    _logger.LogInformation("MqttBackgroundService running");
                     await Task.Delay(1000, stoppingToken);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred. Retrying in 5 seconds...");
-                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken); // Wartezeit vor erneutem Verbindungsversuch
+                _logger.LogError(ex, "An error occurred while connecting to MQTT broker.");
+            }
+            finally
+            {
+                await _mqttClient.DisconnectAsync();
+                _logger.LogInformation("Disconnected from MQTT broker.");
             }
         }
 
-        await _mqttService.DisconnectAsync();
-    }
-    public async Task SendPlayerTurnAsync(int player, int row)
-    {
-        var _player = player;
-        var _row = row;
-        _mqttService.SendPlayerTurnRequestAsync(_player, _row);
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            await _mqttClient.DisconnectAsync();
+            await base.StopAsync(cancellationToken);
+        }
     }
 }

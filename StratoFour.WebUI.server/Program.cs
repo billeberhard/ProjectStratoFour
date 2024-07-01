@@ -38,7 +38,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthService>();
-builder.Services.AddSingleton<MqttService>();
 builder.Services.AddHostedService<BackGroundWorkerService>();
 
 builder.Services.AddHttpClient();
