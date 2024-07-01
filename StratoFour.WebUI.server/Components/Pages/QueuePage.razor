@@ -81,7 +81,11 @@
 
                 hubConnection.On<int, string>("StartGame", (sessionId, role) =>
                 {
-                    NavManager.NavigateTo($"/game");
+                    var query = new Dictionary<string, string>
+                    {
+                    {"name", userName }, {"color", ColorHelper.GetBluePlanetColor()}, {"level", "multiplayer"}
+                    };
+                    NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query));
                 });
 
                 await hubConnection.StartAsync();

@@ -15,6 +15,7 @@ namespace StratoFour.Application.GameStrategies
             {
                 GameModeLevel.Easy => new EasyLevelStrategy(board),
                 GameModeLevel.ApiPlayer => new ApiStrategy(board),
+                GameModeLevel.MultiPlayer => new MultiPlayerMode(board), 
                 _ => throw new NotSupportedException($"Strategy {level} is not supported yet")
             };
         }
