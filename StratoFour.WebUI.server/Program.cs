@@ -7,6 +7,7 @@ using StratoFour.WebUI.server.Hubs;
 using StratoFour.Application.UserMatching;
 using StratoFour.Domain;
 using System.ComponentModel;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,10 +37,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddHostedService<BackGroundWorkerService>();
-builder.Services.AddScoped<BackGroundWorkerService>();
-
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddHostedService<BackGroundWorkerService>();
+
+builder.Services.AddHttpClient();
 
 //Add SignalR
 builder.Services.AddSignalR();

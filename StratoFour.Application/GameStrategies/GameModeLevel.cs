@@ -5,6 +5,7 @@ namespace StratoFour.Application.GameStrategies{
         MultiPlayer,
         Easy,
         Medium,
-        Hard
+        Hard,
+        ApiPlayer
     }
 }

@@ -17,7 +17,7 @@ namespace ConnectFourLogic.Test
         {
             playerOne = new Player("Player 1", "#fff");
             playerTwo = new Player("Player 2", "#000");
-            game = new Game(playerOne, playerTwo, GameModeLevel.Easy);
+            //game = new Game(playerOne, playerTwo, GameModeLevel.Easy);
         }
     }
 }

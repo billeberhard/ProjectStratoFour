@@ -4,25 +4,30 @@ using System.Text;
 using StratoFour.Application.Board;
 using StratoFour.Application.GameStrategies;
 using StratoFour.Application;
+using StratoFour.Domain;
+using System.Windows;
+using System.Media;
+using MQTTnet.Client;
+using System.Numerics;
+using MQTTnet.Client.Options;
+
 
 namespace StratoFour.Application
 {
     public class Game : IGame
     {
         private bool _isOver;
-
         private Player _currentPlayer;
-
         private readonly Player _playerOne;
         private readonly Player _playerTwo;
-
         private Player _winner;
-
         private readonly IGameMode _strategy;
-
         private readonly IGameBoard _board;
+        private readonly BackGroundWorkerService _mqttService;
+        private readonly Action<int> _onMove;
+        private readonly Action<bool> _lockGameUi;
 
-        public Game(Player playerOne, Player playerTwo, GameModeLevel level)
+        public Game(Player playerOne, Player playerTwo, GameModeLevel level,  Action<int> onMove = null, Action<bool> lockGameUi = null)
         {
             _playerOne = playerOne;
             _playerTwo = playerTwo;
@@ -30,6 +35,14 @@ namespace StratoFour.Application
 
             _board = new GameBoard();
             _strategy = GameModeFactory.Create(level, _board);
+            //_mqttService = mqttService;
+            _onMove = onMove;
+            _lockGameUi = lockGameUi;
+        }
+
+        public GameModeLevel GetGameModeLevel()
+        {
+            return _strategy.GetLevel();
         }
 
         public IGameBoard GetBoard() => _board;
@@ -37,7 +50,7 @@ namespace StratoFour.Application
         public Player GetCurrentPlayer() => _currentPlayer;
         public Player GetWinner() => _winner;
 
-        public void DropDisc(int column)
+        public async Task DropDisc(int column)
         {
             if (_isOver)
             {
@@ -49,22 +62,46 @@ namespace StratoFour.Application
             {
                 return;
             }
+            var playerNumber = 1;
+            if (_currentPlayer == _playerTwo)
+            {
+                playerNumber = 2;
+            }
+            _lockGameUi?.Invoke(true);
+            string soundFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "sounds", "playerturn_wood.wav");
+            SoundPlayer sound = new SoundPlayer(soundFilePath);
+            sound.PlaySync();
+            // =================================================== Hack zone ==============================================
+            var mqttCol = column + 1;
+            await SendMqttMessageAsync("1$" + mqttCol);
 
+            //=======================================================================================================================
+            //await _mqttService.SendPlayerTurnAsync(playerNumber, column + 1);
             CheckGameStatus(column, droppedRow);
             if (_isOver)
             {
+                _lockGameUi?.Invoke(false);
                 return;
             }
+
+            _onMove?.Invoke(column);
 
             SwitchPlayer();
 
             if (_strategy.GetLevel() != GameModeLevel.MultiPlayer)
             {
                 (int playedColumn, int playedRow) = _strategy.Play(_currentPlayer, GetOpponent());
+                // =================================================== Hack zone ==============================================
+                var mqttBotCol = playedColumn + 1;
+                await SendMqttMessageAsync("2$" + mqttBotCol);
+
+                //=======================================================================================================================
                 CheckGameStatus(playedColumn, playedRow);
 
                 SwitchPlayer();
+                
             }
+            _lockGameUi?.Invoke(false);
         }
 
         private void SwitchPlayer()
@@ -93,5 +130,33 @@ namespace StratoFour.Application
                 _isOver = true;
             }
         }
+
+        private async Task SendMqttMessageAsync(string payload)
+        {
+            var factory = new MQTTnet.MqttFactory();
+            var mqttClient = factory.CreateMqttClient();
+            var options = new MqttClientOptionsBuilder()
+                .WithTcpServer("localhost", 1883)
+                .Build();
+
+            try
+            {
+                await mqttClient.ConnectAsync(options);
+                var message = new MQTTnet.MqttApplicationMessageBuilder()
+                    .WithTopic("send_from_app/position")
+                    .WithPayload(payload)
+                    .WithRetainFlag()
+                    .Build();
+
+                await mqttClient.PublishAsync(message);
+                await mqttClient.DisconnectAsync();
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (log it, notify the user, etc.)
+                Console.WriteLine($"MQTT operation failed: {ex.Message}");
+            }
+        }
+
     }
 }

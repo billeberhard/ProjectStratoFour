@@ -2,6 +2,7 @@
 @using StratoFour.Application;
 @using StratoFour.Application.GameStrategies;
 @using StratoFour.Application.Helpers;
+@using StratoFour.Domain
 
 <h3 id="play">Play</h3>
 
@@ -11,24 +12,47 @@
 }
 else
 {
-    <GameBoardView Game="@_game"></GameBoardView>
-    <button @onclick="Surrender">Surrender</button>
-    <button @onclick="Rematch">Rematch</button>
+    <GameBoardView Game="@_game" Disabled="@_isGameLocked"></GameBoardView>
+    <button @onclick="Surrender" disabled="@_isGameLocked">Surrender</button>
+    <button @onclick="Rematch" disabled="@_isGameLocked">Rematch</button>
 }
 
 @code {
     private IGame _game;
+    private bool _isGameLocked;
 
     protected override void OnInitialized()
     {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        var parsedQuery = QueryHelpers.ParseQuery(uri.Query);
+        var gameModeLevel = GameModeLevel.Easy;
+
         // Currently, only easy level is supported for playing against computer.
         // To support more levels, extend the form and logic.
-        var level = GameModeLevel.Easy;
+        var level = parsedQuery.GetValueOrDefault("level", "singleplayer");
+        var playerOne = new Player("", "");
+        var playerTwo = new Player("", "");
 
-        var playerOne = CreateMainPlayerFromUri();
-        var playerTwo = CreateComputerPlayer(playerOne.Color);
+        switch (level)
+        {
+            case "singleplayer":
+                gameModeLevel = GameModeLevel.Easy;
+                playerOne = CreateMainPlayerFromUri();
+                playerTwo = CreateComputerPlayer(playerOne.Color);
+                break;
 
-        _game = new Game(playerOne, playerTwo, level);
+            case "botvsbot":
+                gameModeLevel = GameModeLevel.ApiPlayer;
+                playerOne = CreateApiPlayer();
+                playerTwo = CreateComputerPlayer(playerOne.Color);
+                break;
+            case "multiplayer":
+                gameModeLevel = GameModeLevel.MultiPlayer;
+                playerOne = CreateMainPlayerFromUri();
+                break;
+        }
+
+        _game = new Game(playerOne, playerTwo, gameModeLevel, lockGameUi: LockGameUi);
     }
 
     private Player CreateMainPlayerFromUri()
@@ -40,6 +64,13 @@ else
         string color = parsedQuery.GetValueOrDefault("color", "#1DAC46");
 
         return new Player(name, color);
+    }
+
+    private Player CreateApiPlayer()
+    {
+        string color = ColorHelper.GetBluePlanetColor();
+
+        return new Player("Api", color);
     }
 
     private Player CreateComputerPlayer(string mainPlayerColor)
@@ -60,6 +91,12 @@ else
     private void Rematch()
     {
         OnInitialized();
+        StateHasChanged();
+    }
+
+    private void LockGameUi(bool lockUi)
+    {
+        _isGameLocked = lockUi;
         StateHasChanged();
     }
 }

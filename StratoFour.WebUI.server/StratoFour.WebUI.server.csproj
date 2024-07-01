@@ -16,13 +16,18 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.4" />
-    <PackageReference Include="MQTTnet" Version="4.3.3.952" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
+    <PackageReference Include="MQTTnet" Version="3.1.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\StratoFour.Application\StratoFour.Application.csproj" />
     <ProjectReference Include="..\StratoFour.Domain\StratoFour.Domain.csproj" />
     <ProjectReference Include="..\StratoFour.Infrastructure\StratoFour.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\sounds\" />
   </ItemGroup>
 
 </Project>
