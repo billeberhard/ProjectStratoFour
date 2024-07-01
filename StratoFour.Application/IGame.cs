@@ -11,6 +11,6 @@ namespace StratoFour.Application
         Player GetCurrentPlayer();
         Player GetWinner();
         bool IsOver();
-        void DropDisc(int column);
+        Task DropDisc(int column);
     }
 }

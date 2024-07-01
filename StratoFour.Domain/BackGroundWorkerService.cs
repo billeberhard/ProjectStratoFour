@@ -12,18 +12,14 @@ namespace StratoFour.Domain;
 public class BackGroundWorkerService : BackgroundService
 {
     private readonly ILogger<BackGroundWorkerService> _logger;
-    private IMqttClient _mqttClient;
-    private MqttClientOptions _options;
+    private readonly MqttService _mqttService;
 
-    public BackGroundWorkerService(ILogger<BackGroundWorkerService> logger)
+    public BackGroundWorkerService(ILogger<BackGroundWorkerService> logger, MqttService mqttService)
     {
         _logger = logger;
 
         var factory = new MqttFactory();
-        _mqttClient = factory.CreateMqttClient();
-        _options = new MqttClientOptionsBuilder()
-            .WithTcpServer("localhost", 1883)
-            .Build();
+        _mqttService = mqttService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -32,43 +28,13 @@ public class BackGroundWorkerService : BackgroundService
         {
             try
             {
-                _mqttClient.ConnectedAsync += async e =>
-                {
-                    _logger.LogInformation("Connected successfully with MQTT Broker(s).");
+                await _mqttService.ConnectAsync(stoppingToken);
 
-                    // Subscribe to a topic
-                    await _mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic("send_from_app/position_response").Build());
-
-                    _logger.LogInformation("Subscribed to topic.");
-                };
-
-                _mqttClient.DisconnectedAsync += async e =>
-                {
-                    _logger.LogInformation("Disconnected from MQTT Broker(s). Reconnecting...");
-                    await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken); // Wartezeit vor erneutem Verbindungsversuch
-                };
-
-                _mqttClient.ApplicationMessageReceivedAsync += e =>
-                {
-                    var message = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
-                    _logger.LogInformation($"Received message: {message} from topic: {e.ApplicationMessage.Topic}");
-
-                    // Process received message
-                    return Task.CompletedTask;
-                };
-
-                await _mqttClient.ConnectAsync(_options, stoppingToken);
-
-                while (_mqttClient.IsConnected && !stoppingToken.IsCancellationRequested)
+                while (!stoppingToken.IsCancellationRequested)
                 {
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                     await Task.Delay(1000, stoppingToken);
                 }
-            }
-            catch (MQTTnet.Exceptions.MqttCommunicationException ex)
-            {
-                _logger.LogError(ex, "Error while connecting to MQTT Broker. Retrying in 5 seconds...");
-                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken); // Wartezeit vor erneutem Verbindungsversuch
             }
             catch (Exception ex)
             {
@@ -77,25 +43,12 @@ public class BackGroundWorkerService : BackgroundService
             }
         }
 
-        await _mqttClient.DisconnectAsync();
+        await _mqttService.DisconnectAsync();
     }
-
-    public async Task SendPlayerTurnRequestAsync(int player, int row)
+    public async Task SendPlayerTurnAsync(int player, int row)
     {
-        string playerCommand = row.ToString() + "$" + player.ToString();
-        var message = new MqttApplicationMessageBuilder()
-            .WithTopic("send_from_app/position")
-            .WithPayload(playerCommand)
-            .WithRetainFlag()
-            .Build();
-
-        if (_mqttClient.IsConnected)
-        {
-            await _mqttClient.PublishAsync(message);
-        }
-        else
-        {
-            _logger.LogWarning("Cannot send message, MQTT client is not connected.");
-        }
+        var _player = player;
+        var _row = row;
+        _mqttService.SendPlayerTurnRequestAsync(_player, _row);
     }
 }

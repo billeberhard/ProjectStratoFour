@@ -2,6 +2,7 @@
 @using StratoFour.Application;
 @using StratoFour.Application.GameStrategies;
 @using StratoFour.Application.Helpers;
+@using StratoFour.Domain
 
 <h3 id="play">Play</h3>
 
@@ -11,13 +12,14 @@
 }
 else
 {
-    <GameBoardView Game="@_game"></GameBoardView>
-    <button @onclick="Surrender">Surrender</button>
-    <button @onclick="Rematch">Rematch</button>
+    <GameBoardView Game="@_game" Disabled="@_isGameLocked"></GameBoardView>
+    <button @onclick="Surrender" disabled="@_isGameLocked">Surrender</button>
+    <button @onclick="Rematch" disabled="@_isGameLocked">Rematch</button>
 }
 
 @code {
     private IGame _game;
+    private bool _isGameLocked;
 
     protected override void OnInitialized()
     {
@@ -50,7 +52,7 @@ else
                 break;
         }
 
-        _game = new Game(playerOne, playerTwo, gameModeLevel);
+        _game = new Game(playerOne, playerTwo, gameModeLevel, lockGameUi: LockGameUi);
     }
 
     private Player CreateMainPlayerFromUri()
@@ -89,6 +91,12 @@ else
     private void Rematch()
     {
         OnInitialized();
+        StateHasChanged();
+    }
+
+    private void LockGameUi(bool lockUi)
+    {
+        _isGameLocked = lockUi;
         StateHasChanged();
     }
 }

@@ -7,6 +7,7 @@ using StratoFour.WebUI.server.Hubs;
 using StratoFour.Application.UserMatching;
 using StratoFour.Domain;
 using System.ComponentModel;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,9 +38,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthService>();
-
+builder.Services.AddSingleton<MqttService>();
 builder.Services.AddHostedService<BackGroundWorkerService>();
-builder.Services.AddSingleton<BackGroundWorkerService>();
 
 builder.Services.AddHttpClient();
 
