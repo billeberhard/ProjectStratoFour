@@ -3,6 +3,7 @@
 @using StratoFour.Application.GameStrategies;
 @using StratoFour.Application.Helpers;
 @using StratoFour.Domain
+@inject MessageService MessageService
 
 <h3 id="play">Play</h3>
 
@@ -52,7 +53,7 @@ else
                 break;
         }
 
-        _game = new Game(playerOne, playerTwo, gameModeLevel, lockGameUi: LockGameUi);
+        _game = new Game(playerOne, playerTwo, gameModeLevel, MessageService, lockGameUi: LockGameUi);
     }
 
     private Player CreateMainPlayerFromUri()
