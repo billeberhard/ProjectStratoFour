@@ -32,24 +32,10 @@ namespace StratoFour.Application
             _strategy = GameModeFactory.Create(level, _board);
         }
 
-        public IGameBoard GetBoard()
-        {
-            return _board;
-        }
-
-        public bool IsOver()
-        {
-            return _isOver;
-        }
-        public Player GetCurrentPlayer()
-        {
-            return _currentPlayer;
-        }
-
-        public Player GetWinner()
-        {
-            return _winner;
-        }
+        public IGameBoard GetBoard() => _board;
+        public bool IsOver() => _isOver;
+        public Player GetCurrentPlayer() => _currentPlayer;
+        public Player GetWinner() => _winner;
 
         public void DropDisc(int column)
         {

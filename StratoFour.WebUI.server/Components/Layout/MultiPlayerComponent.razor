@@ -1,0 +1,123 @@
+﻿@page "/multiplayer-game/{gameId:int}"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.AspNetCore.WebUtilities;
+@using StratoFour.Application;
+@using StratoFour.Application.GameStrategies;
+@using StratoFour.Application.Board;
+@using StratoFour.Infrastructure.Models;
+@using StratoFour.Application.Helpers;
+@inject IUserService UserService
+
+<h3 id="play">Play</h3>
+
+@if (_game == null)
+{
+    <span>Loading...</span>
+}
+else
+{
+    <GameBoardView Game="@_game" OnColumnSelected="MakeMove"></GameBoardView>
+    <div>
+        <p>@statusMessage</p>
+        @if (isMyTurn)
+        {
+            <button @onclick="EndTurn">End Turn</button>
+        }
+    </div>
+    <button @onclick="Surrender">Surrender</button>
+    <button @onclick="Rematch">Rematch</button>
+}
+
+@code {
+    private IGame _game;
+    private HubConnection? hubConnection;
+    private int gameId;
+    private string email;
+    private bool isMyTurn;
+    private string statusMessage;
+
+    [Parameter]
+    public int GameId { get; set; }
+
+    protected override async void OnInitialized()
+    {
+        email = await AuthService.GetEmailAsync();
+
+        gameId = GameId; 
+
+        if(email != null)
+        {
+            hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavManager.ToAbsoluteUri("/gamehub"))
+            .Build();
+
+            hubConnection.On("JoinedGame", (int gameId) =>
+            {
+                statusMessage = "Waiting for the opponent's move...";
+                StateHasChanged();
+            });
+
+            hubConnection.On<IGameBoard>("YourTurn", (board) =>
+            {
+                _game.GetBoard().CopyFrom(board);
+                isMyTurn = true;
+                statusMessage = "Your turn!";
+                StateHasChanged();
+            });
+
+            hubConnection.On<IGameBoard>("OpponentTurn", (board) =>
+            {
+                _game.GetBoard().CopyFrom(board);
+                isMyTurn = false;
+                statusMessage = "Opponent's turn.";
+                StateHasChanged();
+            });
+
+            hubConnection.On<IGameBoard>("UpdateBoard", (board) =>
+            {
+                _game.GetBoard().CopyFrom(board);
+                StateHasChanged();
+            });
+
+            hubConnection.On<Player>("NextTurn", (currentPlayer) =>
+            {
+                isMyTurn = currentPlayer.Email == email;
+                statusMessage = isMyTurn ? "Your turn!" : "Opponent's turn.";
+                StateHasChanged();
+            });
+
+            hubConnection.On<Player>("GameOver", (winner) =>
+            {
+                statusMessage = winner != null ? $"{winner.Name} has won the game!" : "It's a draw!";
+                StateHasChanged();
+            });
+
+            await hubConnection.StartAsync();
+            await hubConnection.InvokeAsync("JoinGame", gameId, email);
+        }
+    }
+
+    private async Task MakeMove(int column)
+    {
+        if (isMyTurn)
+        {
+            await hubConnection.InvokeAsync("MakeMove", gameId, column, email);
+        }
+    }
+
+    private void Surrender()
+    {
+        NavManager.NavigateTo("/");
+    }
+    private void Rematch()
+    {
+        OnInitialized();
+        StateHasChanged();
+    }
+
+    private async Task EndTurn()
+    {
+        isMyTurn = false;
+        await hubConnection.InvokeAsync("EndTurn", gameId, email);
+    }
+}

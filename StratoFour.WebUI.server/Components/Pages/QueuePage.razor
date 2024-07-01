@@ -8,16 +8,13 @@
 @inject IUserService UserService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3>Choose Game Mode</h3>
-
 <AuthorizeView>
     <NotAuthorized>
         <p>Please login to play.</p>
     </NotAuthorized>
     <Authorized>
         <p>Connected as @userName</p>
-        <button @onclick="PlayAgainstComputer">Play Against Computer</button>
-        <button @onclick="PlayAgainstUser">Play Against User</button>
+        <button class="btn btn-primary btn-lg mt-3" style="width: 30%;" @onclick="PlayAgainstUser">Search For Opponent</button>
     </Authorized>
 </AuthorizeView>
 
@@ -29,8 +26,8 @@
 @if (matchedOpponent != null)
 {
     <h3>Opponent found: @matchedOpponent.Username</h3>
-    <button @onclick="AcceptMatch">Accept</button>
-    <button @onclick="DeclineMatch">Decline</button>
+    <button class ="btn btn-primary btn-lg mt-3" style="width: 30%;" @onclick="AcceptMatch">Accept</button>
+    <button class="btn btn-primary btn-lg mt-3" style="width: 30%;" @onclick="DeclineMatch">Decline</button>
 }
 
 
@@ -84,7 +81,7 @@
 
                 hubConnection.On<int, string>("StartGame", (sessionId, role) =>
                 {
-                    NavManager.NavigateTo($"/game/{sessionId}/{role}");
+                    NavManager.NavigateTo($"/game");
                 });
 
                 await hubConnection.StartAsync();
@@ -114,16 +111,6 @@
             Console.Error.WriteLine($"Error in ConnectUser: {ex.Message}");
             throw;
         }
-    }
-
-    private void PlayAgainstComputer()
-    {
-        var query = new Dictionary<string, string> {
-            { "name", userName }, { "color",  ColorHelper.GetBluePlanetColor() }
-        };
-
-        NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query));
-        
     }
 
     private async Task PlayAgainstUser()

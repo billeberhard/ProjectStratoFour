@@ -58,8 +58,19 @@
 
     private void HandleNewGame()
     {
-        //do multipllayer stuff
-        NavManager.NavigateTo("queue");
+        if(selectedGameType == "multiplayer")
+        {
+            NavManager.NavigateTo("queue");
+        }
+        else
+        {
+            var query = new Dictionary<string, string> {
+            { "name", userName }, { "color",  ColorHelper.GetBluePlanetColor() }
+        };
+
+            NavManager.NavigateTo(QueryHelpers.AddQueryString("game", query));
+        }
+
     }
 
     private void HandleSettingsClick()
