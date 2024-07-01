@@ -41,6 +41,7 @@ namespace StratoFour.Application
             _lockGameUi = lockGameUi;
             _messageService = messageService;
             SubscribeToMessages();
+            IsTurnFinished = false;
         }
         public bool IsTurnFinished { get; set; }
 
@@ -101,8 +102,8 @@ namespace StratoFour.Application
             sound.PlaySync();
             // =================================================== Hack zone ==============================================
             var mqttCol = column + 1;
-            await SendMqttMessageAsync("1$" + mqttCol);
-            while (IsTurnFinished = false)
+            await SendMqttMessageAsync(mqttCol + "$1");
+            while (IsTurnFinished == false)
             {
                 Thread.Sleep(100);
             }
@@ -127,8 +128,8 @@ namespace StratoFour.Application
                 (int playedColumn, int playedRow) = _strategy.Play(_currentPlayer, GetOpponent());
                 // =================================================== Hack zone ==============================================
                 var mqttBotCol = playedColumn + 1;
-                await SendMqttMessageAsync("2$" + mqttBotCol);
-                while (IsTurnFinished = false)
+                await SendMqttMessageAsync(mqttBotCol + "$2");
+                while (IsTurnFinished == false)
                 {
                     Thread.Sleep(100);
                 }
